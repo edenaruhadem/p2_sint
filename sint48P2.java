@@ -13,7 +13,7 @@ String disco = req.getParameter("disco");
 String cancion = req.getParameter("cancion");
 switch(fase)
 {
-    case "01": inicio(out); break;
+    case "01": inicio(out,fase); break;
 }
 }
 public void inicio(PrintWriter out, String fase)
