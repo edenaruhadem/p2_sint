@@ -137,7 +137,7 @@ public class Sint48P2 extends HttpServlet {
         out.println("<br></br>");    
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
         out.println("</form>");
-        out.println("<button class = 'buttonAtras' onclick=\"window.location='/Sint48/P2IM?pfase=12'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras' onclick=\"window.location='/Sint48/P2IM?pfase=12&panio="+anio+"'\">Atras</button> ");
         out.println("<br></br>");    
         out.println("<button class = 'buttonInicio' onclick=\"window.location='/Sint48/P2IM?pfase=01'\">Inicio</button> ");
     
@@ -156,7 +156,7 @@ public class Sint48P2 extends HttpServlet {
         out.println("<p>La Bamba</p>");
         out.println("<p>La Estaca</p>");
         out.println("</form>");
-        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/Sint48/P2IM?pfase=13'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/Sint48/P2IM?pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
         out.println("<br></br>");
         out.println("<button class = 'buttonInicio' onclick=\"window.location='/Sint48/P2IM?pfase=01'\">Inicio</button> ");    
     } 
