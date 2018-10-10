@@ -9,6 +9,14 @@ import java.util.Map;
 import java.util.HashMap;
 @WebServlet("/P2IM")
 public class Sint48P2 extends HttpServlet {
+        ArrayList<String>Anios = new ArrayList<String>();
+        ArrayList<String>Discos = new ArrayList<String>();
+        ArrayList<String>Canciones = new ArrayList<String>();
+        ArrayList<String>Resultado = new ArrayList<String>();
+        /*public void init(ServletConfig config) throws ServletException
+        {
+
+        }*/
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
     {
@@ -19,6 +27,7 @@ public class Sint48P2 extends HttpServlet {
         String anio = req.getParameter("panio");
         String idd = req.getParameter("pidd");
         String idc = req.getParameter("pidc");
+        String auto = req.getParameter("auto");
         //String auto = req.getParameter("auto");
                 
         //StringBuilder xmlStringBuilder = new StringBuilder();
@@ -43,20 +52,28 @@ public class Sint48P2 extends HttpServlet {
 	{
 		switch(fase)
         	{        
-            	case "01": doGetFase01(out); break;
-            	case "02": doGetFase02(out); break;
-            	case "11": doGetFase11(out); break;
-            	case "12": doGetFase12(out,anio); break;
-            	case "13": doGetFase13(out,anio,idd); break;
-            	case "14": doGetFase14(out,anio,idd,idc); break;
+            	case "01": doGetFase01(out,auto); break;
+            	case "02": doGetFase02(out,auto); break;
+            	case "11": doGetFase11(out,auto, Anios); break;
+            	case "12": doGetFase12(out,auto,anio, Discos); break;
+            	case "13": doGetFase13(out,auto,anio,idd, Canciones); break;
+            	case "14": doGetFase14(out,auto,anio,idd,idc, Resultado); break;
         	}
 
 	}        
-    }//doGet
-    /*public void doGetFase01(PrintWriter out)
-    {                       
-    }*/           
-    public void doGetFase01(PrintWriter out)
+    }//doGet              
+    public void doGetFase01(PrintWriter out, String auto)
+    {
+        if(auto==null)
+        {
+            doHtmlF01(out);                
+        }
+        else if(auto.equals("si"))
+        {
+            //doXmlF01();
+        }                            
+    }//doHtmlF01
+    public void doHtmlF01(PrintWriter out)
     {
         out.println("<html>");
         out.println("<head>");
@@ -66,7 +83,7 @@ public class Sint48P2 extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
-        out.println("<h2>Bienvenido a este servicio.</h2>");
+        out.println("<h2>Bienvenido a este servicio.</h2>");                                 
         out.println("<form name = 'miformfase01' action=''>");
         out.println("<a href = '/sint48/P2IM?passwd=d4r18c392b&pfase=02'>Pulsa aquí para ver los ficheros erróneos</a>");
         out.println("<h3>Selecciona una consulta:</h3>");
@@ -84,12 +101,23 @@ public class Sint48P2 extends HttpServlet {
     }//doHtmlF01
     /*public void doXmlF01(PrintWriter out)
     {        
-        out.println("<?xml version=’1.0’ encoding=’utf-8’ ?>");
-        out.println("<service>");
-        out.println("<status>OK</status>");
-        out.println("</service>");
+        <?xml version=’1.0’ encoding=’utf-8’ ?>
+        <service>
+        <status>OK</status>
+        </service>
     }*/
-    public void doGetFase02(PrintWriter out)
+    public void doGetFase02(PrintWriter out, String auto)
+    {
+        if(auto==null)
+        {
+            doHtmlF02(out);                
+        }
+        else if(auto.equals("si"))
+        {
+            //doXmlF02();
+        }         
+    }//doGetFase02
+    public void doHtmlF02(PrintWriter out)
     {
         out.println("<html>");
         out.println("<head>");
@@ -113,107 +141,83 @@ public class Sint48P2 extends HttpServlet {
         out.println("<p>sint48. @Diego Rios Castro.</p>");                
         out.println("</footer>");
         out.println("</html>");
-    }//doGetFase02
-    public void doGetFase11(PrintWriter out)
-    {
-        ArrayList<String>Anios = new ArrayList<String>();
-        Anios = getC1Anios();
-        doHtmlF11(out,Anios);
-    }//doGetFase11
-
-    public void doGetFase12(PrintWriter out, String anio)
+    }//doHtmlF02
+    /*public void doXmlF02(PrintWriter out)
     {        
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h1>Servicio de consulta de canciones</h1>");    
-        out.println("<h2>Consulta 1: Año="+anio+"</h2>");    
-        out.println("<h3>Selecciona un disco:</h3>");
-        out.println("<form name = 'miformfase12'>");
-	out.println("<input type = 'hidden' name = 'passwd' value = 'd4r18c392b'></input>");
-        out.println("<input type = 'hidden' name = 'pfase' value = '13'></input>");	
-        out.println("<input type = 'hidden' name = 'panio' value ='"+anio+"'></input>");
-        out.println("<ol>");
-        out.println("<li><input type = 'radio' name = 'pidd' value = 'BloodMountain'checked>-Blood Mountain</input></li>");
-        out.println("<li><input type = 'radio' name = 'pidd' value = 'Remission'>-Remission</input></li>");
-        out.println("<li><input type = 'radio' name = 'pidd' value = 'Leviathan'>-Leviathan</input></li>");
-        out.println("</ol>");
-        out.println("<br></br>");    
-        out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
-        out.println("</form>");
-        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=11'\">Atras</button> ");
-        out.println("<br></br>");
-        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
-        out.println("</body>");
-        out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
-        out.println("</footer>");
-        out.println("</html>");    
+        <?xml version=’1.0’ encoding=’utf-8’ ?>
+<errores>
+<warnings>
+</warnings>
+<errors>
+<error>
+<file>URL del fichero que provoca el error</file>
+<cause>Explicación propia o proporcionada por el parser</cause>
+</error>
+<error>
+<file>URL del fichero que provoca el error</file>
+<cause>Explicación propia o proporcionada por el parser</cause>
+</error>
+</errors>
+<fatalerrors>
+<fatalerror>
+<file>URL del fichero que provoca el fatal error</file>
+<cause>Explicación propia o proporcionada por el parser</cause>
+</fatalerror>
+</fatalerrors>
+</errores>
+    }*/
+    public void doGetFase11(PrintWriter out, String auto, ArrayList Anios)
+    {        
+        Anios = getC1Anios();
+        if(auto==null)
+        {
+            doHtmlF11(out,Anios);                
+        }
+        else if(auto.equals("si"))
+        {
+            //doXmlF11();
+        }        
+    }//doGetFase11
+    public void doGetFase12(PrintWriter out,String auto, String anio, ArrayList Discos)
+    {        
+        Discos = getC1Discos(anio);
+        if(auto==null)
+        {
+             doHtmlF12(out,anio, Discos);                
+        }
+        else if(auto.equals("si"))
+        {
+            //doXmlF12();
+        }
+        
     }//doGetFase12
-    public void doGetFase13(PrintWriter out, String anio, String idd)
-    {
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h1>Servicio de consulta de canciones</h1>");    
-        out.println("<h2>Consulta 1: Año="+anio+", Disco="+idd+"</h2>");
-        out.println("<form name = 'miformfase13'>");    
-        out.println("<h3>Selecciona una cancion:</h3>");
-	out.println("<input type = 'hidden' name = 'passwd' value = 'd4r18c392b'></input>");
-        out.println("<input type = 'hidden' name = 'pfase' value = '14'></input>");	
-        out.println("<input type = 'hidden' name = 'panio' value = '"+anio+"'></input>");
-        out.println("<input type = 'hidden' name = 'pidd' value = '"+idd+"'></input>");
-        out.println("<ol>");
-        out.println("<li><input type = 'radio' name = 'pidc' value = 'LaBarbacoa'checked>-La Barbacoa</input></li>");
-        out.println("<li><input type = 'radio' name = 'pidc' value = 'LaCucaracha'>-La Cucaracha</input></li>");
-        out.println("<li><input type = 'radio' name = 'pidc' value = 'LaBomba'>-La Bomba</input></li>");
-        out.println("</ol>");
-        out.println("<br></br>");    
-        out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
-        out.println("</form>");
-        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=12&panio="+anio+"'\">Atras</button> ");
-        out.println("<br></br>");    
-        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
-        out.println("</body>");
-        out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
-        out.println("</footer>");
-        out.println("</html>");
-    
+    public void doGetFase13(PrintWriter out,String auto, String anio, String idd, ArrayList Canciones)
+    {        
+        Canciones = getC1Canciones(anio, idd);
+        if(auto==null)
+        {
+              doHtmlF13(out,anio, idd, Canciones);                
+        }
+        else if(auto.equals("si"))
+        {
+            //doXmlF13();
+        }
+        
     }//doGetFase13
-    public void doGetFase14(PrintWriter out, String anio, String idd, String idc)
-    {
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h1>Servicio de consulta de canciones</h1>");
-        out.println("<form name = 'miformfase14'>");
-        out.println("<h2>Consulta 1: Año="+anio+", Disco="+idd+", Cancion="+idc+"</h2>");    
-        out.println("<h3>Este es el resultado:</h3>");
-        out.println("<p>La Bamba</p>");
-        out.println("<p>La Estaca</p>");
-        out.println("</form>");
-        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
-        out.println("<br></br>");
-        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
-        out.println("</body>");
-        out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
-        out.println("</footer>");
-        out.println("</html>");    
-    }//doGetFase14
+    public void doGetFase14(PrintWriter out, String auto, String anio, String idd, String idc, ArrayList Resultado)
+    {        
+        Resultado = getC1Resultado(anio, idd, idc);
+        if(auto==null)
+        {
+                doHtmlF14(out,anio, idd, idc, Resultado);                
+        }
+        else if(auto.equals("si"))
+        {
+            //doXmlF14();
+        }
+        
+    }//doGetFase14     
+    
 public static ArrayList<String> getC1Anios()
 {
         String[] anios = {"anio1","anio2","anio3","anio4"};        
@@ -221,17 +225,22 @@ public static ArrayList<String> getC1Anios()
 }
 
 
-public static ArrayList<Disco> getC1Discos (String anio)
+public static ArrayList<String> getC1Discos (String anio) //Type Disco
 {
+        String[] discos = {"disco1","disco2","disco3","disco4"};
+        return new ArrayList<String>(Arrays.asList(discos));   //Type Disco
 
 }
-public static ArrayList<Cancion> getC1Canciones (String anio, String idd)
+public static ArrayList<String> getC1Canciones (String anio, String idd) //Type Cancion
 {
+        String[] canciones = {"cancion1","cancion2","cancion3","cancion4"};
+        return new ArrayList<String>(Arrays.asList(canciones)); //Type Cancion
 
 }
-public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc)
+public static ArrayList<String> getC1Resultado (String anio, String idd, String idc) //Type Cancion
 {
-        
+        String[] resultado = {"resultado1","resultado2","resultado3","resultado4"};
+        return new ArrayList<String>(Arrays.asList(resultado));  //Type Cancion
 }
 
 public void doHtmlF11(PrintWriter out, ArrayList Anios)
@@ -268,6 +277,148 @@ public void doHtmlF11(PrintWriter out, ArrayList Anios)
         out.println("</footer>");
         out.println("</html>");
 }
+/*public void doXmlF11(PrintWriter out)
+    {        
+        <?xml version=’1.0’ encoding=’utf-8’ ?>
+<anios>
+<anio>2001</anio>
+<anio>2002</anio>
+…
+</anios>
+    }*/
+public void doHtmlF12(PrintWriter out, String anio, ArrayList Discos)
+{
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
+        out.println("<meta charset=utf-8'></meta>");
+	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<h1>Servicio de consulta de canciones</h1>");    
+        out.println("<h2>Consulta 1: Año="+anio+"</h2>");    
+        out.println("<h3>Selecciona un disco:</h3>");
+        out.println("<form name = 'miformfase12'>");
+	out.println("<input type = 'hidden' name = 'passwd' value = 'd4r18c392b'></input>");
+        out.println("<input type = 'hidden' name = 'pfase' value = '13'></input>");	
+        out.println("<input type = 'hidden' name = 'panio' value ='"+anio+"'></input>");
+        out.println("<ol>");
+        for(int i=0;i<Discos.size();i++)
+        {
+        out.println("<li><input type = 'radio' name = 'pidd' value = "+Discos.get(i)+">-"+Discos.get(i)+"</input></li>");
+        }
+        /*out.println("<li><input type = 'radio' name = 'pidd' value = 'BloodMountain'checked>-Blood Mountain</input></li>");
+        out.println("<li><input type = 'radio' name = 'pidd' value = 'Remission'>-Remission</input></li>");
+        out.println("<li><input type = 'radio' name = 'pidd' value = 'Leviathan'>-Leviathan</input></li>");*/
+        out.println("</ol>");
+        out.println("<br></br>");    
+        out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
+        out.println("</form>");
+        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=11'\">Atras</button> ");
+        out.println("<br></br>");
+        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
+        out.println("</body>");
+        out.println("<footer>");
+        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("</footer>");
+        out.println("</html>");
+}
+/*public void doXmlF12(PrintWriter out)
+    {        
+        <?xml version=’1.0’ encoding=’utf-8’ ?>
+<discos>
+<disco idd="2004-003-001" interprete="Bruce Springsteen" langs="en es">Nebraska</disco>
+<disco idd="2004-002-002" interprete="Franco Battiato" langs="it fr de">Gommalacca</disco>
+…
+</discos>
+    }*/
+public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Canciones)
+{
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
+        out.println("<meta charset=utf-8'></meta>");
+	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<h1>Servicio de consulta de canciones</h1>");    
+        out.println("<h2>Consulta 1: Año="+anio+", Disco="+idd+"</h2>");
+        out.println("<form name = 'miformfase13'>");    
+        out.println("<h3>Selecciona una cancion:</h3>");
+	out.println("<input type = 'hidden' name = 'passwd' value = 'd4r18c392b'></input>");
+        out.println("<input type = 'hidden' name = 'pfase' value = '14'></input>");	
+        out.println("<input type = 'hidden' name = 'panio' value = '"+anio+"'></input>");
+        out.println("<input type = 'hidden' name = 'pidd' value = '"+idd+"'></input>");
+        out.println("<ol>");
+        for(int i=0;i<Canciones.size();i++)
+        {
+        out.println("<li><input type = 'radio' name = 'pidc' value = "+Canciones.get(i)+">-"+Canciones.get(i)+"</input></li>");
+        }
+        /*out.println("<li><input type = 'radio' name = 'pidc' value = 'LaBarbacoa'checked>-La Barbacoa</input></li>");
+        out.println("<li><input type = 'radio' name = 'pidc' value = 'LaCucaracha'>-La Cucaracha</input></li>");
+        out.println("<li><input type = 'radio' name = 'pidc' value = 'LaBomba'>-La Bomba</input></li>");*/
+        out.println("</ol>");
+        out.println("<br></br>");    
+        out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
+        out.println("</form>");
+        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=12&panio="+anio+"'\">Atras</button> ");
+        out.println("<br></br>");    
+        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
+        out.println("</body>");
+        out.println("<footer>");
+        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("</footer>");
+        out.println("</html>");
+
+}
+/*public void doXmlF13(PrintWriter out)
+    {        
+        <?xml version=’1.0’ encoding=’utf-8’ ?>
+<canciones>
+<cancion idc="2004-003-002-03" genero="Country" duracion="314">Two people</cancion>
+<cancion idc="2004-003-002-01" genero="Rock" duracion="412">Break every rule</cancion>
+<cancion idc="2004-003-002-02" genero="Pop" duracion="480">Typical Male</cancion>
+</canciones>
+    }*/
+public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList Resultado)
+{
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
+        out.println("<meta charset=utf-8'></meta>");
+	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<h1>Servicio de consulta de canciones</h1>");
+        out.println("<form name = 'miformfase14'>");
+        out.println("<h2>Consulta 1: Año="+anio+", Disco="+idd+", Cancion="+idc+"</h2>");    
+        out.println("<h3>Este es el resultado:</h3>");
+        for(int i=0;i<Resultado.size();i++)
+        {
+        out.println("<p>"+Resultado.get(i)+"</p>");
+        }
+        /*out.println("<p>La Bamba</p>");
+        out.println("<p>La Estaca</p>");*/
+        out.println("</form>");
+        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
+        out.println("<br></br>");
+        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
+        out.println("</body>");
+        out.println("<footer>");
+        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("</footer>");
+        out.println("</html>"); 
+}
+/*public void doXmlF14(PrintWriter out)
+    {        
+        <?xml version=’1.0’ encoding=’utf-8’ ?>
+<canciones>
+<cancion descripcion="Primera del Wildest…" premios="Disco de Oro">Wildest dreams</cancion>
+<cancion descripcion="Tercera del Wil…" premios="Disco de Oro">Whatever you want</cancion>
+<cancion descripcion="Tercera del Break…" premios="Lampara…">Two people</cancion>
+…
+</canciones>
+    }*/
 
 
 }
