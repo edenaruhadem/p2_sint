@@ -250,7 +250,7 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-            doXmlF13(res,Canciones);
+            doXmlF13(res,idd,Canciones);
         }
         /*if((idd==null)&&(auto.equals("si")))
         {
@@ -267,7 +267,7 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-                doXmlF14(res,Resultado);
+                doXmlF14(res,idc,Resultado);
         }
         /*if((idc==null)&&(auto.equals("si")))
         {
@@ -442,17 +442,25 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Cancio
         out.println("</html>");
 
 }
-public void doXmlF13(HttpServletResponse res, ArrayList Canciones)throws IOException
+public void doXmlF13(HttpServletResponse res, String idd, ArrayList Canciones)throws IOException
     {
             res.setContentType("text/xml");
             PrintWriter out = res.getWriter();
             out.println("<?xml version='1.0' encoding='utf-8' ?>");
-            out.println("<canciones>");
-            for(int i=0;i<Canciones.size();i++)
+            if(idd==null)
             {
-            out.println("<cancion>"+Canciones.get(i)+"</cancion>");
+                out.println("<wrongRequest>no param:pidd</wrongRequest>");
+            }            
+            else
+            {
+                out.println("<canciones>");
+                for(int i=0;i<Canciones.size();i++)
+                {
+                out.println("<cancion>"+Canciones.get(i)+"</cancion>");
+                }
+                out.println("</canciones>");                                         
             }
-            out.println("</canciones>");
+            
     }
 public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList Resultado)
 {
@@ -483,17 +491,24 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         out.println("</footer>");
         out.println("</html>"); 
 }
-public void doXmlF14(HttpServletResponse res, ArrayList Resultado)throws IOException
+public void doXmlF14(HttpServletResponse res,String idc, ArrayList Resultado)throws IOException
     {
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
-        out.println("<canciones>");
-        for(int i=0;i<Resultado.size();i++)
-        {
-        out.println("<cancion>"+Resultado.get(i)+"</cancion>");
-        }
-        out.println("</canciones>");
+        if(idc==null)
+            {
+                out.println("<wrongRequest>no param:pidc</wrongRequest>");
+            }            
+            else
+            {
+                out.println("<canciones>");
+                for(int i=0;i<Resultado.size();i++)
+                {
+                out.println("<cancion>"+Resultado.get(i)+"</cancion>");
+                }
+                out.println("</canciones>");                                                       
+            }        
     }
 public void doXmlNop(HttpServletResponse res)throws IOException
     {
