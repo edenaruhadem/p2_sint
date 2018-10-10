@@ -224,7 +224,7 @@ public class Sint48P2 extends HttpServlet {
             doXmlF11(res,Anios);
         }        
     }//doGetFase11
-    public void doGetFase12(PrintWriter out,String auto, HttpServletResponse res, String anio, ArrayList Discos)throws IOException
+    public void doGetFase12(PrintWriter out, String auto, HttpServletResponse res, String anio, ArrayList Discos)throws IOException
     {        
         Discos = getC1Discos(anio);
         if(auto==null)
@@ -233,11 +233,15 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-            doXmlF12(res,Discos);
+            doXmlF12(res,anio,Discos);
         }
+        /*if((anio==null)&&(auto.equals("si")))
+        {
+            doXmlNparam(res,fase);
+        }*/
         
     }//doGetFase12
-    public void doGetFase13(PrintWriter out,String auto,HttpServletResponse res, String anio, String idd, ArrayList Canciones)throws IOException
+    public void doGetFase13(PrintWriter out, String auto,HttpServletResponse res, String anio, String idd, ArrayList Canciones)throws IOException
     {        
         Canciones = getC1Canciones(anio, idd);
         if(auto==null)
@@ -248,6 +252,10 @@ public class Sint48P2 extends HttpServlet {
         {
             doXmlF13(res,Canciones);
         }
+        /*if((idd==null)&&(auto.equals("si")))
+        {
+            doXmlNparam(res,fase);
+        }*/
         
     }//doGetFase13
     public void doGetFase14(PrintWriter out, String auto, HttpServletResponse res, String anio, String idd, String idc, ArrayList Resultado)throws IOException
@@ -261,6 +269,10 @@ public class Sint48P2 extends HttpServlet {
         {
                 doXmlF14(res,Resultado);
         }
+        /*if((idc==null)&&(auto.equals("si")))
+        {
+            doXmlNparam(res,fase);
+        }*/
         
     }//doGetFase14     
     
@@ -372,17 +384,24 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList Discos)
         out.println("</footer>");
         out.println("</html>");
 }
-public void doXmlF12(HttpServletResponse res, ArrayList Discos)throws IOException
+public void doXmlF12(HttpServletResponse res, String anio, ArrayList Discos)throws IOException
     {
             res.setContentType("text/xml");
-            PrintWriter out = res.getWriter();
+            PrintWriter out = res.getWriter();            
             out.println("<?xml version='1.0' encoding='utf-8' ?>");
-            out.println("<discos>");
-            for(int i=0;i<Discos.size();i++)
+            if(anio==null)
             {
-            out.println("<disco>"+Discos.get(i)+"</disco>");
+                out.println("<wrongRequest>no param:panio</wrongRequest>");
+            }            
+            else
+            {
+                out.println("<discos>");
+                for(int i=0;i<Discos.size();i++)
+                {
+                out.println("<disco>"+Discos.get(i)+"</disco>");
+                }
+                out.println("</discos>");                            
             }
-            out.println("</discos>");
     }
 public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Canciones)
 {
@@ -490,6 +509,19 @@ public void doXmlIp(HttpServletResponse res)throws IOException
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
         out.println("<wrongRequest>bad passwd</wrongRequest>");        
     }
+/*public void doXmlNparam(HttpServletResponse res, String fase)throws IOException
+{
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8'?>");
+        switch(fase)
+        {
+                case "12": out.println("<wrongRequest>no param:panio</wrongRequest>");break;
+                case "13": out.println("<wrongRequest>no param:pidd</wrongRequest>");break;
+                case "14": out.println("<wrongRequest>no param:pidc</wrongRequest>");break;
+                default: out.println("<wrongRequest>no param</wrongRequest>");break;
+        }        
+}*/
 
 
 }
