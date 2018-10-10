@@ -28,14 +28,22 @@ public class Sint48P2 extends HttpServlet {
     {
         res.setContentType("text/html ; charset='utf-8'");
         PrintWriter out = res.getWriter();
-	String passwd = req.getParameter("passwd");
+	String p = req.getParameter("p");
         String fase = req.getParameter("pfase");
         String anio = req.getParameter("panio");
         String idd = req.getParameter("pidd");
         String idc = req.getParameter("pidc");
         String auto = req.getParameter("auto");      
 
-	if(!passwd.equals("d4r18c392b"))
+        if((p==null)&&(auto.equals("si")))
+        {
+                doXmlNop(res);
+        }
+        else if((!p.equals("d4r18c392b"))&&(auto.equals("si")))
+        {
+                doXmlIp(res);
+        }
+        /*if(!p.equals("d4r18c392b"))
 	{
 		out.println("<html>");
 		out.println("<head>");
@@ -50,7 +58,7 @@ public class Sint48P2 extends HttpServlet {
                 out.println("<p>sint48. @Diego Rios Castro.</p>");                
                 out.println("</footer>"); 
 		out.println("</html>");	    		
-	}
+	}*/
 	else
 	{
 		switch(fase)
@@ -74,7 +82,7 @@ public class Sint48P2 extends HttpServlet {
         else if(auto.equals("si"))
         {
             doXmlF01(res);
-        }                            
+        }                                  
     }//doHtmlF01
     public void doHtmlF01(PrintWriter out)
     {
@@ -88,12 +96,12 @@ public class Sint48P2 extends HttpServlet {
         out.println("<h1>Servicio de consulta de canciones</h1>");
         out.println("<h2>Bienvenido a este servicio.</h2>");                                 
         out.println("<form name = 'miformfase01' action=''>");
-        out.println("<a href = '/sint48/P2IM?passwd=d4r18c392b&pfase=02'>Pulsa aquí para ver los ficheros erróneos</a>");
+        out.println("<a href = '/sint48/P2IM?p=d4r18c392b&pfase=02'>Pulsa aquí para ver los ficheros erróneos</a>");
         out.println("<h3>Selecciona una consulta:</h3>");
         out.println("<input type = 'radio' checked>Consulta1: Canciones de un intérprete que duran menos que una dada</input>");
         out.println("<br></br>");
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
-        out.println("<input type = 'hidden' name = 'passwd' value = d4r18c392b></input>");
+        out.println("<input type = 'hidden' name = 'p' value = d4r18c392b></input>");
         out.println("<input type = 'hidden' name = 'pfase' value = '11'></input>");	
         out.println("</form>");
         out.println("</body>");
@@ -147,7 +155,7 @@ public class Sint48P2 extends HttpServlet {
         out.println("<h2>Se han encontrado 2 ficheros con errores fatales</h2>");
         out.println("<p>Error</p>");
         out.println("<p>Error</p>");        
-        out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Atras</button>");
+        out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atras</button>");
         out.println("</body>");
         out.println("<footer>");
         out.println("<p>sint48. @Diego Rios Castro.</p>");                
@@ -293,7 +301,7 @@ public void doHtmlF11(PrintWriter out, ArrayList Anios)
         out.println("<h2>Consulta 1</h2>");    
         out.println("<h3>Selecciona un año:</h3>");
         out.println("<form name = 'miformfase11'>");
-	out.println("<input type = 'hidden' name = 'passwd' value = 'd4r18c392b'></input>");    
+	out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");    
         out.println("<input type = 'hidden' name = 'pfase' value = '12'></input>");	
         out.println("<ol>");
         for(int i=0;i<Anios.size();i++)
@@ -307,7 +315,7 @@ public void doHtmlF11(PrintWriter out, ArrayList Anios)
         out.println("<br></br>");        
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");            
         out.println("</form>");
-        out.println("<button type = 'button' class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Atras</button> ");
+        out.println("<button type = 'button' class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atras</button> ");
         out.println("</body>");
         out.println("<footer>");
         out.println("<p>sint48. @Diego Rios Castro.</p>");                
@@ -340,7 +348,7 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList Discos)
         out.println("<h2>Consulta 1: Año="+anio+"</h2>");    
         out.println("<h3>Selecciona un disco:</h3>");
         out.println("<form name = 'miformfase12'>");
-	out.println("<input type = 'hidden' name = 'passwd' value = 'd4r18c392b'></input>");
+	out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");
         out.println("<input type = 'hidden' name = 'pfase' value = '13'></input>");	
         out.println("<input type = 'hidden' name = 'panio' value ='"+anio+"'></input>");
         out.println("<ol>");
@@ -355,9 +363,9 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList Discos)
         out.println("<br></br>");    
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
         out.println("</form>");
-        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=11'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=11'\">Atras</button> ");
         out.println("<br></br>");
-        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
+        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Inicio</button> ");
         out.println("</body>");
         out.println("<footer>");
         out.println("<p>sint48. @Diego Rios Castro.</p>");                
@@ -389,7 +397,7 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Cancio
         out.println("<h2>Consulta 1: Año="+anio+", Disco="+idd+"</h2>");
         out.println("<form name = 'miformfase13'>");    
         out.println("<h3>Selecciona una cancion:</h3>");
-	out.println("<input type = 'hidden' name = 'passwd' value = 'd4r18c392b'></input>");
+	out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");
         out.println("<input type = 'hidden' name = 'pfase' value = '14'></input>");	
         out.println("<input type = 'hidden' name = 'panio' value = '"+anio+"'></input>");
         out.println("<input type = 'hidden' name = 'pidd' value = '"+idd+"'></input>");
@@ -405,9 +413,9 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Cancio
         out.println("<br></br>");    
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
         out.println("</form>");
-        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=12&panio="+anio+"'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=12&panio="+anio+"'\">Atras</button> ");
         out.println("<br></br>");    
-        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
+        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Inicio</button> ");
         out.println("</body>");
         out.println("<footer>");
         out.println("<p>sint48. @Diego Rios Castro.</p>");                
@@ -447,9 +455,9 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         /*out.println("<p>La Bamba</p>");
         out.println("<p>La Estaca</p>");*/
         out.println("</form>");
-        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
         out.println("<br></br>");
-        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Inicio</button> ");
+        out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Inicio</button> ");
         out.println("</body>");
         out.println("<footer>");
         out.println("<p>sint48. @Diego Rios Castro.</p>");                
@@ -467,6 +475,20 @@ public void doXmlF14(HttpServletResponse res, ArrayList Resultado)throws IOExcep
         out.println("<cancion>"+Resultado.get(i)+"</cancion>");
         }
         out.println("</canciones>");
+    }
+public void doXmlNop(HttpServletResponse res)throws IOException
+    {
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<wrongRequest>no passwd</wrongRequest>");        
+    }
+public void doXmlIp(HttpServletResponse res)throws IOException
+    {
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<wrongRequest>bad passwd</wrongRequest>");        
     }
 
 
