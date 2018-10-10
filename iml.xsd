@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="https://www.w3schools.com" xmlns="https://www.w3schools.com" elementFormDefault="qualified">
+        <xs:element name="Songs">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="Anio" type="xs:integer"/>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:integer">
+                                <xs:pattern value="[0-9][0-9][0-9][0-9]"/>
+                                <xs:minInclusive value="1900"/>
+                                <xs:maxInclusive value="2018"/>
+                            </xs:restriction>
+                        </xs:simpleType>                                
+                    <xs:element name="Pais">
+                        <xs:attribute name="pais" type="xs:string"/>
+                        <xs:attribute name="lang" type="xs:string"/>
+                            <xs:restriction base="xs:string">
+                                <xs:pattern value="[a-z][a-z]"/>
+                            </xs:restriction>    
+                            <xs:element name="Disco" type="xs:string"/>
+                            <xs:attribute name="idd" type="xs:string"/>
+                                <xs:restriction base="xs:string">
+                                    <xs:pattern name="iddpattern" value="[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]-[0-9][0-9][0-9]"/>
+                                </xs:restriction>
+                            <xs:attribute name="langs" type="xs:string"/>
+                                <xs:restriction base="xs:string">
+                                    <xs:pattern value="([a-z][a-z] )*"/>
+                                </xs:restriction>                 
+                                <xs:element name="Titulo" type="xs:string"/>
+                                <xs:element name="Premios" type="xs:string"/>
+                                    <xs:complexType>
+                                        <xs:element name="Premio" type="xs:string"/>
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:whiteSpace value="preserve"/>
+                                                    <xs:enumeration value="Disco de Oro"/>
+                                                    <xs:enumeration value="Grammy"/>
+                                                    <xs:enumeration value="Lampara Minera"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>                                
+                                    </xs:complexType>
+                                <xs:element name ="Interprete" type="xs:string">
+                                <xs:element name ="Cancion" type="xs:string">
+                                <xs:attribute name="idc" type="xs:string"/>
+                                    <xs:sequence>
+                                        <xs:element name="Titulo" type="xs:string"/>
+                                        <xs:element name="Duracion" type="xs:integer"/>
+                                            <xs:restriction base="xs:integer">                                            
+                                                <xs:minExclusive value="0"/>
+                                                <xs:maxExclusive value="600"/>
+                                            </xs:restriction>
+                                        <xs:element name="Generos" type="xs:string"/>
+                                        <xs:complexType>
+                                            <xs:element name="Genero" type="xs:string"/>
+                                                <xs:simpleType>
+                                                    <xs:restriction base="xs:string">
+                                                        <xs:enumeration value="Rock"/>
+                                                        <xs:enumeration value="Pop"/>
+                                                        <xs:enumeration value="Country"/>
+                                                        <xs:enumeration value="Balada"/>
+                                                    </xs:restriction>
+                                                </xs:simpleType>
+                                        </xs:complexType>
+                                        <xs:element name="Version" type="xs:string"/>
+                                        <xs:attribute name="anio" type="xs:string"/>
+                                            <xs:element name="Titulo" type="xs:string"/>
+                                            <xs:element name="Idc" type="xs:string"/>
+                                            <xs:element name="IML" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:element>                                    
+                            </xs:element>
+                    </xs:element>         
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+</xs:schema> 

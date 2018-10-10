@@ -7,6 +7,12 @@ import java.util.List;
 import javax.servlet.annotation.*;
 import java.util.Map;
 import java.util.HashMap;
+
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
+import org.xml.sax.helpers.*;
+
 @WebServlet("/P2IM")
 public class Sint48P2 extends HttpServlet {
         ArrayList<String>Anios = new ArrayList<String>();
@@ -90,7 +96,7 @@ public class Sint48P2 extends HttpServlet {
         out.println("<head>");
         out.println("<meta charset=utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");    
-        out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+        out.println("<link rel='stylesheet' type='text/css' href='sint48/iml.css'></link>"); //href='iml.css' en el lab
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
@@ -136,7 +142,7 @@ public class Sint48P2 extends HttpServlet {
         out.println("<head>");
         out.println("<meta charset=utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	out.println("<link rel='stylesheet' type='text/css' href='sint48/iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
@@ -306,7 +312,7 @@ public void doHtmlF11(PrintWriter out, ArrayList Anios)
         out.println("<head>");
         out.println("<meta charset=utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	out.println("<link rel='stylesheet' type='text/css' href='sint48/iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
@@ -353,7 +359,7 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList Discos)
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
         out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	out.println("<link rel='stylesheet' type='text/css' href='sint48/iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");    
@@ -409,7 +415,7 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Cancio
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
         out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	out.println("<link rel='stylesheet' type='text/css' href='sint48/iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");    
@@ -468,7 +474,7 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
         out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	out.println("<link rel='stylesheet' type='text/css' href='sint48/iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
