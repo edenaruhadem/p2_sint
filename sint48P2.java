@@ -13,10 +13,16 @@ public class Sint48P2 extends HttpServlet {
         ArrayList<String>Discos = new ArrayList<String>();
         ArrayList<String>Canciones = new ArrayList<String>();
         ArrayList<String>Resultado = new ArrayList<String>();
-        /*public void init(ServletConfig config) throws ServletException
-        {
-
-        }*/
+        public static ArrayList<String>fichErroneos = new ArrayList<String>();       
+        
+    public void init(ServletConfig config) throws ServletException
+    {
+                String[] fich = {"fichero1","fichero2","fichero3","fichero4","fichero5"};
+                ArrayList<String>ficheros = new ArrayList<String>(Arrays.asList(fich));
+                fichErroneos.add(0, fich[0]);
+                fichErroneos.add(1, fich[2]); 
+                fichErroneos.add(2, fich[3]);               
+    }
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
     {
@@ -27,10 +33,7 @@ public class Sint48P2 extends HttpServlet {
         String anio = req.getParameter("panio");
         String idd = req.getParameter("pidd");
         String idc = req.getParameter("pidc");
-        String auto = req.getParameter("auto");
-        //String auto = req.getParameter("auto");
-                
-        //StringBuilder xmlStringBuilder = new StringBuilder();
+        String auto = req.getParameter("auto");      
 
 	if(!passwd.equals("d4r18c392b"))
 	{
@@ -51,18 +54,18 @@ public class Sint48P2 extends HttpServlet {
 	else
 	{
 		switch(fase)
-        	{        
-            	case "01": doGetFase01(out,auto); break;
-            	case "02": doGetFase02(out,auto); break;
-            	case "11": doGetFase11(out,auto, Anios); break;
-            	case "12": doGetFase12(out,auto,anio, Discos); break;
-            	case "13": doGetFase13(out,auto,anio,idd, Canciones); break;
-            	case "14": doGetFase14(out,auto,anio,idd,idc, Resultado); break;
+        	{                        
+            	case "01": doGetFase01(out,auto,res); break;
+            	case "02": doGetFase02(out,auto,fichErroneos,res); break;
+            	case "11": doGetFase11(out,auto,res, Anios); break;
+            	case "12": doGetFase12(out,auto,res,anio, Discos); break;
+            	case "13": doGetFase13(out,auto,res,anio,idd, Canciones); break;
+            	case "14": doGetFase14(out,auto,res,anio,idd,idc, Resultado); break;
         	}
 
 	}        
     }//doGet              
-    public void doGetFase01(PrintWriter out, String auto)
+    public void doGetFase01(PrintWriter out, String auto, HttpServletResponse res)throws IOException
     {
         if(auto==null)
         {
@@ -70,7 +73,7 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-            //doXmlF01();
+            doXmlF01(res);
         }                            
     }//doHtmlF01
     public void doHtmlF01(PrintWriter out)
@@ -99,25 +102,27 @@ public class Sint48P2 extends HttpServlet {
         out.println("</footer>");
         out.println("</html>");
     }//doHtmlF01
-    /*public void doXmlF01(PrintWriter out)
-    {        
-        <?xml version=’1.0’ encoding=’utf-8’ ?>
-        <service>
-        <status>OK</status>
-        </service>
-    }*/
-    public void doGetFase02(PrintWriter out, String auto)
+    public void doXmlF01(HttpServletResponse res)throws IOException
+    {
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();        
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<service>");
+        out.println("<status>OK</status>");
+        out.println("</service>");
+    }
+    public void doGetFase02(PrintWriter out, String auto, ArrayList fichErroneos, HttpServletResponse res)throws IOException
     {
         if(auto==null)
         {
-            doHtmlF02(out);                
+            doHtmlF02(out, fichErroneos);                
         }
         else if(auto.equals("si"))
         {
-            //doXmlF02();
+            doXmlF02(res, fichErroneos);
         }         
     }//doGetFase02
-    public void doHtmlF02(PrintWriter out)
+    public void doHtmlF02(PrintWriter out, ArrayList fichErroneos)
     {
         out.println("<html>");
         out.println("<head>");
@@ -130,10 +135,17 @@ public class Sint48P2 extends HttpServlet {
         out.println("<h2>Se han encontrado 2 ficheros con warnings.</h2>");
         out.println("<p>Warning</p>");
         out.println("<p>Warning</p>");
-        out.println("<h3>Se han encontrado 4 ficheros con errores</h3>");
+        out.println("<h2>Se han encontrado 4 ficheros con errores</h2>");
+        for(int i=0;i<fichErroneos.size();i++)
+        {
+        out.println("<p>"+fichErroneos.get(i)+"</p>");
+        }
+        /*out.println("<p>Error</p>");
+        out.println("<p>Error</p>");    
+        out.println("<p>Error</p>");    
+        out.println("<p>Error</p>");*/
+        out.println("<h2>Se han encontrado 2 ficheros con errores fatales</h2>");
         out.println("<p>Error</p>");
-        out.println("<p>Error</p>");    
-        out.println("<p>Error</p>");    
         out.println("<p>Error</p>");        
         out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?passwd=d4r18c392b&pfase=01'\">Atras</button>");
         out.println("</body>");
@@ -142,31 +154,57 @@ public class Sint48P2 extends HttpServlet {
         out.println("</footer>");
         out.println("</html>");
     }//doHtmlF02
-    /*public void doXmlF02(PrintWriter out)
-    {        
-        <?xml version=’1.0’ encoding=’utf-8’ ?>
-<errores>
-<warnings>
-</warnings>
-<errors>
-<error>
-<file>URL del fichero que provoca el error</file>
-<cause>Explicación propia o proporcionada por el parser</cause>
-</error>
-<error>
-<file>URL del fichero que provoca el error</file>
-<cause>Explicación propia o proporcionada por el parser</cause>
-</error>
-</errors>
-<fatalerrors>
-<fatalerror>
-<file>URL del fichero que provoca el fatal error</file>
-<cause>Explicación propia o proporcionada por el parser</cause>
-</fatalerror>
-</fatalerrors>
-</errores>
-    }*/
-    public void doGetFase11(PrintWriter out, String auto, ArrayList Anios)
+    public void doXmlF02(HttpServletResponse res, ArrayList fichErroneos)throws IOException
+    {    
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<errores>");
+        out.println("<warnings>");
+        out.println("<warning>");
+        out.println("<file>URL del fichero que provoca el warning</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</warning>");
+        out.println("<warning>");
+        out.println("<file>URL del fichero que provoca el warning</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</warning>");
+        out.println("</warnings>");
+        out.println("<errors>");
+        
+        for(int i=0;i<fichErroneos.size();i++)
+        {
+        out.println("<error>");
+        out.println("<file>URL del fichero que provoca el error"+fichErroneos.get(i)+"</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</error>");
+        }        
+        /*out.println("<error>");
+        out.println("<file>URL del fichero que provoca el error</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</error>");
+        out.println("<error>");
+        out.println("<file>URL del fichero que provoca el error</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</error>");
+        out.println("<error>");
+        out.println("<file>URL del fichero que provoca el error</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</error>");*/
+        out.println("</errors>");
+        out.println("<fatalerrors>");
+        out.println("<fatalerror>");
+        out.println("<file>URL del fichero que provoca el fatal error</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</fatalerror>");
+        out.println("<fatalerror>");
+        out.println("<file>URL del fichero que provoca el fatal error</file>");
+        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("</fatalerror>");
+        out.println("</fatalerrors>");
+        out.println("</errores>");
+    }
+    public void doGetFase11(PrintWriter out, String auto,HttpServletResponse res, ArrayList Anios)throws IOException
     {        
         Anios = getC1Anios();
         if(auto==null)
@@ -175,10 +213,10 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-            //doXmlF11();
+            doXmlF11(res,Anios);
         }        
     }//doGetFase11
-    public void doGetFase12(PrintWriter out,String auto, String anio, ArrayList Discos)
+    public void doGetFase12(PrintWriter out,String auto, HttpServletResponse res, String anio, ArrayList Discos)throws IOException
     {        
         Discos = getC1Discos(anio);
         if(auto==null)
@@ -187,11 +225,11 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-            //doXmlF12();
+            doXmlF12(res,Discos);
         }
         
     }//doGetFase12
-    public void doGetFase13(PrintWriter out,String auto, String anio, String idd, ArrayList Canciones)
+    public void doGetFase13(PrintWriter out,String auto,HttpServletResponse res, String anio, String idd, ArrayList Canciones)throws IOException
     {        
         Canciones = getC1Canciones(anio, idd);
         if(auto==null)
@@ -200,11 +238,11 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-            //doXmlF13();
+            doXmlF13(res,Canciones);
         }
         
     }//doGetFase13
-    public void doGetFase14(PrintWriter out, String auto, String anio, String idd, String idc, ArrayList Resultado)
+    public void doGetFase14(PrintWriter out, String auto, HttpServletResponse res, String anio, String idd, String idc, ArrayList Resultado)throws IOException
     {        
         Resultado = getC1Resultado(anio, idd, idc);
         if(auto==null)
@@ -213,7 +251,7 @@ public class Sint48P2 extends HttpServlet {
         }
         else if(auto.equals("si"))
         {
-            //doXmlF14();
+                doXmlF14(res,Resultado);
         }
         
     }//doGetFase14     
@@ -242,7 +280,6 @@ public static ArrayList<String> getC1Resultado (String anio, String idd, String 
         String[] resultado = {"resultado1","resultado2","resultado3","resultado4"};
         return new ArrayList<String>(Arrays.asList(resultado));  //Type Cancion
 }
-
 public void doHtmlF11(PrintWriter out, ArrayList Anios)
 {
         out.println("<html>");
@@ -277,15 +314,19 @@ public void doHtmlF11(PrintWriter out, ArrayList Anios)
         out.println("</footer>");
         out.println("</html>");
 }
-/*public void doXmlF11(PrintWriter out)
-    {        
-        <?xml version=’1.0’ encoding=’utf-8’ ?>
-<anios>
-<anio>2001</anio>
-<anio>2002</anio>
-…
-</anios>
-    }*/
+public void doXmlF11(HttpServletResponse res, ArrayList Anios)throws IOException
+{    
+        res.setContentType("text/xml");    
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<anios>");
+        for(int i=0; i<Anios.size();i++)
+        {
+                out.println("<anio>"+Anios.get(i)+"</anio>");
+        }
+        out.println("</anios>");
+}
+
 public void doHtmlF12(PrintWriter out, String anio, ArrayList Discos)
 {
         out.println("<html>");
@@ -323,15 +364,18 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList Discos)
         out.println("</footer>");
         out.println("</html>");
 }
-/*public void doXmlF12(PrintWriter out)
-    {        
-        <?xml version=’1.0’ encoding=’utf-8’ ?>
-<discos>
-<disco idd="2004-003-001" interprete="Bruce Springsteen" langs="en es">Nebraska</disco>
-<disco idd="2004-002-002" interprete="Franco Battiato" langs="it fr de">Gommalacca</disco>
-…
-</discos>
-    }*/
+public void doXmlF12(HttpServletResponse res, ArrayList Discos)throws IOException
+    {
+            res.setContentType("text/xml");
+            PrintWriter out = res.getWriter();
+            out.println("<?xml version='1.0' encoding='utf-8' ?>");
+            out.println("<discos>");
+            for(int i=0;i<Discos.size();i++)
+            {
+            out.println("<disco>"+Discos.get(i)+"</disco>");
+            }
+            out.println("</discos>");
+    }
 public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Canciones)
 {
         out.println("<html>");
@@ -371,15 +415,18 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList Cancio
         out.println("</html>");
 
 }
-/*public void doXmlF13(PrintWriter out)
-    {        
-        <?xml version=’1.0’ encoding=’utf-8’ ?>
-<canciones>
-<cancion idc="2004-003-002-03" genero="Country" duracion="314">Two people</cancion>
-<cancion idc="2004-003-002-01" genero="Rock" duracion="412">Break every rule</cancion>
-<cancion idc="2004-003-002-02" genero="Pop" duracion="480">Typical Male</cancion>
-</canciones>
-    }*/
+public void doXmlF13(HttpServletResponse res, ArrayList Canciones)throws IOException
+    {
+            res.setContentType("text/xml");
+            PrintWriter out = res.getWriter();
+            out.println("<?xml version='1.0' encoding='utf-8' ?>");
+            out.println("<canciones>");
+            for(int i=0;i<Canciones.size();i++)
+            {
+            out.println("<cancion>"+Canciones.get(i)+"</cancion>");
+            }
+            out.println("</canciones>");
+    }
 public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList Resultado)
 {
         out.println("<html>");
@@ -409,16 +456,18 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         out.println("</footer>");
         out.println("</html>"); 
 }
-/*public void doXmlF14(PrintWriter out)
-    {        
-        <?xml version=’1.0’ encoding=’utf-8’ ?>
-<canciones>
-<cancion descripcion="Primera del Wildest…" premios="Disco de Oro">Wildest dreams</cancion>
-<cancion descripcion="Tercera del Wil…" premios="Disco de Oro">Whatever you want</cancion>
-<cancion descripcion="Tercera del Break…" premios="Lampara…">Two people</cancion>
-…
-</canciones>
-    }*/
+public void doXmlF14(HttpServletResponse res, ArrayList Resultado)throws IOException
+    {
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<canciones>");
+        for(int i=0;i<Resultado.size();i++)
+        {
+        out.println("<cancion>"+Resultado.get(i)+"</cancion>");
+        }
+        out.println("</canciones>");
+    }
 
 
 }
