@@ -1,76 +1,211 @@
-<?xml version="1.0"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="https://www.w3schools.com" xmlns="https://www.w3schools.com" elementFormDefault="qualified">
-        <xs:element name="Songs">
-            <xs:complexType>
-                <xs:sequence>
-                    <xs:element name="Anio" type="xs:integer"/>
-                        <xs:simpleType>
-                            <xs:restriction base="xs:integer">
-                                <xs:pattern value="[0-9][0-9][0-9][0-9]"/>
-                                <xs:minInclusive value="1900"/>
-                                <xs:maxInclusive value="2018"/>
-                            </xs:restriction>
-                        </xs:simpleType>                                
-                    <xs:element name="Pais">
-                        <xs:attribute name="pais" type="xs:string"/>
-                        <xs:attribute name="lang" type="xs:string"/>
-                            <xs:restriction base="xs:string">
-                                <xs:pattern value="[a-z][a-z]"/>
-                            </xs:restriction>    
-                            <xs:element name="Disco" type="xs:string"/>
-                            <xs:attribute name="idd" type="xs:string"/>
-                                <xs:restriction base="xs:string">
-                                    <xs:pattern name="iddpattern" value="[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]-[0-9][0-9][0-9]"/>
-                                </xs:restriction>
-                            <xs:attribute name="langs" type="xs:string"/>
-                                <xs:restriction base="xs:string">
-                                    <xs:pattern value="([a-z][a-z] )*"/>
-                                </xs:restriction>                 
-                                <xs:element name="Titulo" type="xs:string"/>
-                                <xs:element name="Premios" type="xs:string"/>
-                                    <xs:complexType>
-                                        <xs:element name="Premio" type="xs:string"/>
-                                            <xs:simpleType>
-                                                <xs:restriction base="xs:string">
-                                                    <xs:whiteSpace value="preserve"/>
-                                                    <xs:enumeration value="Disco de Oro"/>
-                                                    <xs:enumeration value="Grammy"/>
-                                                    <xs:enumeration value="Lampara Minera"/>
-                                                </xs:restriction>
-                                            </xs:simpleType>                                
-                                    </xs:complexType>
-                                <xs:element name ="Interprete" type="xs:string">
-                                <xs:element name ="Cancion" type="xs:string">
-                                <xs:attribute name="idc" type="xs:string"/>
-                                    <xs:sequence>
-                                        <xs:element name="Titulo" type="xs:string"/>
-                                        <xs:element name="Duracion" type="xs:integer"/>
-                                            <xs:restriction base="xs:integer">                                            
-                                                <xs:minExclusive value="0"/>
-                                                <xs:maxExclusive value="600"/>
-                                            </xs:restriction>
-                                        <xs:element name="Generos" type="xs:string"/>
-                                        <xs:complexType>
-                                            <xs:element name="Genero" type="xs:string"/>
-                                                <xs:simpleType>
-                                                    <xs:restriction base="xs:string">
-                                                        <xs:enumeration value="Rock"/>
-                                                        <xs:enumeration value="Pop"/>
-                                                        <xs:enumeration value="Country"/>
-                                                        <xs:enumeration value="Balada"/>
-                                                    </xs:restriction>
-                                                </xs:simpleType>
-                                        </xs:complexType>
-                                        <xs:element name="Version" type="xs:string"/>
-                                        <xs:attribute name="anio" type="xs:string"/>
-                                            <xs:element name="Titulo" type="xs:string"/>
-                                            <xs:element name="Idc" type="xs:string"/>
-                                            <xs:element name="IML" type="xs:string"/>
-                                    </xs:sequence>
-                                </xs:element>                                    
-                            </xs:element>
-                    </xs:element>         
-                </xs:sequence>
-            </xs:complexType>
-        </xs:element>
-</xs:schema> 
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="https://www.w3schools.com" xmlns="https://www.w3schools.com" elementFormDefault="qualified">
+
+
+
+    <xsd:complexType name="complexSongs">
+        <xsd:sequence>
+            <xsd:element name="Anio" type="simpleTypeAnio"/>
+            <xsd:element name="Pais" type= "complexTypePais" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="simpleTypeAnio">
+        <xsd:restriction base="xsd:integer">        
+            <xsd:minInclusive value="1900"/>
+            <xsd:maxInclusive value="2018"/>
+        </xsd:restriction>    
+    </xsd:simpleType>
+
+    <xsd:complexType name="complexTypePais">
+        <xsd:sequence>
+            <xsd:element name="Disco" type="complexTypeDisco" maxOccurs = "unbounded"/>   
+        </xsd:sequence>
+        <xsd:attribute name="pais" type="xsd:string"/>
+        <xsd:attribute name="lang" type="simpleTypeAttlang"/>        
+    </xsd:complexType>
+
+    <xsd:simpleType name="simpleTypeAttlang">
+        <xsd:restriction base="xsd:string">        
+        <xsd:pattern value="[a-z][a-z]"/>
+        </xsd:restriction>    
+    </xsd:simpleType>
+
+    <xsd:complexType name="complexTypeDisco">    
+        <xsd:sequence>
+            <xsd:element name="Titulo" type="xsd:string"/>
+            <xsd:element name="Premios" type="complexTypePremios"/>
+            <xsd:element name ="Interprete" type="xsd:string"/>
+            <xsd:element name ="Cancion" type="complexTypeCancion"/>
+        </xsd:sequence>
+        <xsd:attribute name="idd" type="simpleTypeAttidd"/>
+        <xsd:attribute name="langs" type="simpleTypeAttlangs"/>    
+    </xsd:complexType>
+
+    <xsd:simpleType name="simpleTypeAttidd">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]-[0-9][0-9][0-9]"/>
+        </xsd:restriction>   
+    </xsd:simpleType>
+
+    <xsd:simpleType name="simpleTypeAttlangs">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="([a-z][a-z] )*"/>
+        </xsd:restriction>    
+    </xsd:simpleType>
+
+    <xsd:complexType name="complexTypePremios">
+        <xsd:sequence>
+            <xsd:element name="Premio" type="simpleTypePremio"/>
+        </xsd:sequence>                                                    
+    </xsd:complexType>
+            
+    <xsd:simpleType name="simpleTypePremio">
+        <xsd:restriction base="xsd:string">        
+            <xsd:enumeration value="DiscodeOro"/>
+            <xsd:enumeration value="Grammy"/>
+            <xsd:enumeration value="LamparaMinera"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="complexTypeCancion">    
+        <xsd:sequence>
+            <xsd:element name="Titulo" type="xsd:string"/>
+            <xsd:element name="Duracion" type="simpleTypeDuracion"/>
+            <xsd:element name="Generos" type="complexTypeGeneros"/>
+            <xsd:element name="Version" type="complexTypeVersion"/>
+        </xsd:sequence>
+        <xsd:attribute name="idc" type="simpleTypeAttidc"/>                                                    
+    </xsd:complexType>
+
+    <xsd:simpleType name="simpleTypeAttidc">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]-[0-9][0-9][0-9]-[0-9][0-9]"/>
+        </xsd:restriction>   
+    </xsd:simpleType>
+
+    <xsd:simpleType name="simpleTypeDuracion">
+        <xsd:restriction base="xsd:integer">                                            
+            <xsd:minExclusive value="0"/>
+            <xsd:maxExclusive value="600"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="complexTypeGeneros">
+        <xsd:sequence>
+            <xsd:element name="Genero" type="simpleTypeGenero"/>
+        </xsd:sequence>                                                    
+    </xsd:complexType> 
+
+    <xsd:simpleType name="simpleTypeGenero">    
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Rock"/>
+            <xsd:enumeration value="Pop"/>
+            <xsd:enumeration value="Country"/>
+            <xsd:enumeration value="Balada"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+
+    <xsd:complexType name="complexTypeVersion">    
+        <xsd:sequence>       
+            <xsd:element name="Titulo" type="xsd:string"/>
+            <xsd:element name="Idc" type="xsd:string"/>
+            <xsd:element name="IML" type="xsd:string"/>
+        </xsd:sequence>
+        <xsd:attribute name="anio" type="xsd:string"/>    
+    </xsd:complexType>
+    <xsd:element name="Songs" type="complexSongs"></xsd:element>
+</xsd:schema>        
+        
+        <!--<xsd:element name="Songs">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Anio"/>
+                        <xsd:simpleType>
+                            <xsd:restriction base="xs:integer">
+                                <xsd:pattern value="[0-9][0-9][0-9][0-9]"/>
+                                <xsd:minInclusive value="1900"/>
+                                <xsd:maxInclusive value="2018"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:element>                                                                                                               
+                    <xsd:element name="Pais" maxOccurs="unbounded">
+                        <xsd:complexType>
+                            <xsd:attribute name="pais" type="xs:string"/>
+                            <xsd:attribute name="lang"/>
+                                <xsd:restriction base="xs:string">
+                                    <xsd:pattern value="[a-z][a-z]"/>
+                                </xsd:restriction>                                
+                            <xsd:element name="Disco" type="xs:string" maxOccurs = "unbounded"/>
+                                <xsd:complexType>
+                                    <xsd:attribute name="idd"/>
+                                        <xsd:restriction base="xs:string">
+                                            <xsd:pattern name="iddpattern" value="[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]-[0-9][0-9][0-9]"/>
+                                        </xsd:restriction>
+                                    <xsd:attribute name="langs"/>
+                                        <xsd:restriction base="xs:string">
+                                            <xsd:pattern value="([a-z][a-z] )*"/>
+                                        </xsd:restriction>
+                                    <xsd:sequence>                     
+                                        <xsd:element name="Titulo" type="xs:string"/>
+                                        <xsd:element name="Premios" type="xs:string"/>
+                                            <xsd:complexType>
+                                                <xsd:element name="Premio"/>
+                                                    <xsd:simpleType>
+                                                        <xsd:restriction base="xs:string">
+                                                            <xsd:whiteSpace value="preserve"/>
+                                                            <xsd:enumeration value="DiscodeOro"/>
+                                                            <xsd:enumeration value="Grammy"/>
+                                                            <xsd:enumeration value="LamparaMinera"/>
+                                                        </xsd:restriction>
+                                                    </xsd:simpleType>                                                                                                                                                                            
+                                            </xsd:complexType>
+                                        </xsd:element>                                                                            
+                                        <xsd:element name ="Interprete" type="xs:string">
+                                        <xsd:element name ="Cancion" type="xs:string">
+                                            <xsd:complexType>
+                                                <xsd:attribute name="idc" type="xs:string"/>
+                                                <xsd:sequence>
+                                                    <xsd:element name="Titulo" type="xs:string"/>
+                                                    <xsd:element name="Duracion"/>
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xs:integer">                                            
+                                                                <xsd:minExclusive value="0"/>
+                                                                <xsd:maxExclusive value="600"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>                                                        
+                                                    <xsd:element name="Generos" type="xs:string"/>
+                                                        <xsd:complexType>
+                                                            <xsd:element name="Genero"/>
+                                                                <xsd:simpleType>
+                                                                    <xsd:restriction base="xs:string">
+                                                                        <xsd:enumeration value="Rock"/>
+                                                                        <xsd:enumeration value="Pop"/>
+                                                                        <xsd:enumeration value="Country"/>
+                                                                        <xsd:enumeration value="Balada"/>
+                                                                    </xsd:restriction>
+                                                                </xsd:simpleType>
+                                                        </xsd:complexType>
+                                                    </xsd:element>                                                       
+                                                    <xsd:element name="Version" type="xs:string"/>
+                                                        <xsd:simpleType>
+                                                            <xsd:attribute name="anio" type="xs:string"/>
+                                                            <xsd:element name="Titulo" type="xs:string"/>
+                                                            <xsd:element name="Idc" type="xs:string"/>
+                                                            <xsd:element name="IML" type="xs:string"/>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>                                                       
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>                                                            
+                            </xsd:element>                          
+                        </xsd:complexType>
+                    </xsd:element>                            
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>-->
+ 
