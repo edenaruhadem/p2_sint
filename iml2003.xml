@@ -1,0 +1,190 @@
+<Songs>
+    <Anio>2003</Anio>
+    <Pais pais="EEUU" lang="en">
+        <Disco idd="2001-001-001" langs="en fr">
+            <Titulo>Born to run</Titulo>
+                <Premios>
+                    <Premio>Grammy</Premio>
+                    <Premio>LamparaMinera</Premio>
+                </Premios>
+                <Interprete>Bruce Springsteen</Interprete>
+                <Cancion idc="2001-001-001-01">
+                    <Titulo>Born to run</Titulo>
+                    <Duracion>240</Duracion>
+                    <Genero>Rock</Genero>
+                    Primera del Born to run
+                    <Version anio="2005">
+                        <Titulo>Run to born</Titulo>
+                        <IML>iml2005.xml</IML>
+                    </Version>
+                </Cancion>
+                <Cancion idc="2001-001-001-02">
+                Segunda del Born to run
+                    <Titulo>Thunder Road</Titulo>
+                    <Duracion>340</Duracion>
+                    <Genero>Balada</Genero>
+                </Cancion>
+                <Cancion idc="2001-001-001-03">
+                Tercera del Born to run
+                    <Titulo>Night</Titulo>
+                    <Duracion>250</Duracion>
+                    <Genero>Pop</Genero>
+                </Cancion>
+        </Disco>
+        <Disco idd="2001-001-002">
+            <Titulo>Private dancer</Titulo>
+            <Premios>
+                <Premio>Grammy</Premio>
+            </Premios>
+            <Interprete>Tina Turner</Interprete>
+            <Cancion idc="2001-001-002-01">
+                <Titulo>Private dancer</Titulo>
+                <Duracion>222</Duracion>
+                <Genero>Balada</Genero>
+            Primera del Private dancer
+            </Cancion>
+            <Cancion idc="2001-001-002-02">
+            Segunda del Private dancer
+                <Titulo>Been Queen</Titulo>
+                <Duracion>310</Duracion>
+                <Genero>Rock</Genero>
+            </Cancion>
+            <Cancion idc="2001-001-002-03">
+            Tercera del Private dancer
+                <Titulo>Love Got</Titulo>
+                <Duracion>200</Duracion>
+                <Genero>Pop</Genero>
+                <Version anio="2007">
+                    <Titulo>Love Given</Titulo>
+                    <IML>iml2007.xml</IML>
+                </Version>
+            </Cancion>
+        </Disco>
+    </Pais>
+    <Pais pais="España" lang="es">
+        <Disco idd="2001-002-001" langs="en es">
+            <Titulo>Nos sobran los motivos</Titulo>
+            <Interprete>Joaquín Sabina</Interprete>
+            <Cancion idc="2001-002-001-01">
+                <Titulo>Nos sobran los motivos</Titulo>
+                <Duracion>230</Duracion>
+                <Genero>Pop</Genero>
+            Primera del Nos sobran los motivos
+            </Cancion>
+            <Cancion idc="2001-002-001-02">
+            Segunda del Nos sobran los motivos
+                <Titulo>Que se llama Soledad</Titulo>
+                <Duracion>200</Duracion>
+                <Genero>Balada</Genero>
+                <Version anio="2003">
+                    <Idc>2003-001-002-03</Idc>
+                    <IML>iml2003.xml</IML>
+                </Version>
+            </Cancion>
+            <Cancion idc="2001-002-001-03">
+            Tercera del Nos sobran los motivos
+                <Titulo>Contigo</Titulo>
+                <Duracion>205</Duracion>
+                <Genero>Pop</Genero>
+            </Cancion>
+        </Disco>
+        <Disco idd="2001-002-002">
+            <Titulo>¿Cuándo se come aquí?</Titulo>
+            <Premios>
+                <Premio>DiscoDeOro</Premio>
+            </Premios>
+            <Interprete>Siniestro Total</Interprete>
+            <Cancion idc="2001-002-002-01">
+                <Titulo>¿Cuándo se come aquí?</Titulo>
+                <Duracion>202</Duracion>
+                <Genero>Rock</Genero>
+            Primera del ¿Cuándo se come aquí?
+            </Cancion>
+            <Cancion idc="2001-002-002-02">
+                <Titulo>Ponte en mi lugar</Titulo>
+                <Duracion>300</Duracion>
+                <Genero>Rock</Genero>
+            </Cancion>
+            <Cancion idc="2001-002-002-03">
+            Tercera del ¿Cuándo se come aquí?
+                <Titulo>El cobrador loco</Titulo>
+                <Duracion>210</Duracion>
+                <Genero>Rock</Genero>
+            </Cancion>
+        </Disco>
+    </Pais>
+    <Pais pais="Italia" lang="it">
+        <Disco idd="2001-003-001" langs="it es">
+            <Titulo>Singolare</Titulo>
+            <Interprete>Mina</Interprete>
+            <Cancion idc="2001-003-001-01">
+                <Titulo>Singolare</Titulo>
+                <Duracion>130</Duracion>
+                <Genero>Pop</Genero>
+            Primera del Singolare
+            </Cancion>
+            <Cancion idc="2001-003-001-02">
+            Segunda del Singolare
+                <Titulo>Sognando</Titulo>
+                <Duracion>250</Duracion>
+                <Genero>Balada</Genero>
+                <Version anio="2006">
+                    <Titulo>Durmiendo</Titulo>
+                    <IML>iml2006.xml</IML>
+                </Version>
+            </Cancion>
+            <Cancion idc="2001-003-001-03">
+            Tercera del Singolare
+                <Titulo>Colpa mia</Titulo>
+                <Duracion>215</Duracion>
+                <Genero>Balada</Genero>
+            </Cancion>
+        </Disco>
+        <Disco idd="2001-003-002" langs="it es en">
+            <Titulo>La voce del padrone</Titulo>
+            <Premios>
+                <Premio>LamparaMinera</Premio>
+            </Premios>
+            <Interprete>Franco Battiato</Interprete>
+            <Cancion idc="2001-003-002-01">
+                <Titulo>La voce del padrone</Titulo>
+                <Duracion>212</Duracion>
+                <Genero>Pop</Genero>
+            </Cancion>
+            <Cancion idc="2001-003-002-02">
+            Segunda del La voce del padrone
+                <Titulo>Bandiera bianca</Titulo>
+                <Duracion>200</Duracion>
+                <Genero>Pop</Genero>
+            </Cancion>
+            <Cancion idc="2001-003-002-03">
+            Tercera del La voce del padrone
+                <Titulo>Sentimiento nuevo</Titulo>
+                <Duracion>310</Duracion>
+                <Genero>Pop</Genero>
+            </Cancion>
+        </Disco>
+        <Disco idd="2001-003-003" langs="it fr">
+            <Titulo>Dalla Bussola</Titulo>
+            <Interprete>Mina</Interprete>
+            <Cancion idc="2001-003-003-01">
+                <Titulo>Dalla Bussola</Titulo>
+                <Duracion>140</Duracion>
+                <Genero>Balada</Genero>
+            Primera del Dalla Bussola
+            </Cancion>
+            <Cancion idc="2001-003-003-02">
+            Segunda del Dalla Bussola
+                <Titulo>E penso a te</Titulo>
+                <Duracion>240</Duracion>
+                <Genero>Balada</Genero>
+            </Cancion>
+            <Cancion idc="2001-003-003-03">
+            Tercera del Dalla Bussola
+                <Titulo>Fiume azzurro</Titulo>
+                <Duracion>295</Duracion>
+                <Genero>Balada</Genero>
+            </Cancion>
+        </Disco>
+    </Pais>
+</Songs>
