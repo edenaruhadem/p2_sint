@@ -1,4 +1,4 @@
-<Songs>
+<Songs xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="https://www.w3schools.com">
     <Anio>2010</Anio>
     <Pais pais="EEUU" lang="en">
         <Disco idd="2001-001-001" langs="en fr">
@@ -14,8 +14,7 @@
                     <Genero>Rock</Genero>
                     Primera del Born to run
                     <Version anio="2005">
-                        <Titulo>Run to born</Titulo>
-                        <IML>iml2005.xml</IML>
+                        <Titulo>Run to born</Titulo>                        
                     </Version>
                 </Cancion>
                 <Cancion idc="2001-001-001-02">
@@ -55,8 +54,7 @@
                 <Duracion>200</Duracion>
                 <Genero>Pop</Genero>
                 <Version anio="2007">
-                    <Titulo>Love Given</Titulo>
-                    <IML>iml2007.xml</IML>
+                    <Titulo>Love Given</Titulo>                    
                 </Version>
             </Cancion>
         </Disco>
@@ -77,8 +75,7 @@
                 <Duracion>200</Duracion>
                 <Genero>Balada</Genero>
                 <Version anio="2003">
-                    <Idc>2003-001-002-03</Idc>
-                    <IML>iml2003.xml</IML>
+                    <Idc>2003-001-002-03</Idc>                    
                 </Version>
             </Cancion>
             <Cancion idc="2001-002-001-03">
@@ -129,8 +126,7 @@
                 <Duracion>250</Duracion>
                 <Genero>Balada</Genero>
                 <Version anio="2006">
-                    <Titulo>Durmiendo</Titulo>
-                    <IML>iml2006.xml</IML>
+                    <Titulo>Durmiendo</Titulo>                    
                 </Version>
             </Cancion>
             <Cancion idc="2001-003-001-03">

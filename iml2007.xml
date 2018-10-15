@@ -1,4 +1,4 @@
-<Songs>
+<Songs xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="https://www.w3schools.com">
     <Anio>2007</Anio>
     <Pais pais="EEUU" lang="en">
         <Disco idd="2001-001-001" langs="en fr">
@@ -12,11 +12,7 @@
                     <Titulo>Born to run</Titulo>
                     <Duracion>240</Duracion>
                     <Genero>Rock</Genero>
-                    Primera del Born to run
-                    <Version anio="2005">
-                        <Titulo>Run to born</Titulo>
-                        <IML>iml2005.xml</IML>
-                    </Version>
+                    Primera del Born to run                    
                 </Cancion>
                 <Cancion idc="2001-001-001-02">
                 Segunda del Born to run
@@ -53,11 +49,7 @@
             Tercera del Private dancer
                 <Titulo>Love Got</Titulo>
                 <Duracion>200</Duracion>
-                <Genero>Pop</Genero>
-                <Version anio="2007">
-                    <Titulo>Love Given</Titulo>
-                    <IML>iml2007.xml</IML>
-                </Version>
+                <Genero>Pop</Genero>                
             </Cancion>
         </Disco>
     </Pais>
@@ -75,11 +67,7 @@
             Segunda del Nos sobran los motivos
                 <Titulo>Que se llama Soledad</Titulo>
                 <Duracion>200</Duracion>
-                <Genero>Balada</Genero>
-                <Version anio="2003">
-                    <Idc>2003-001-002-03</Idc>
-                    <IML>iml2003.xml</IML>
-                </Version>
+                <Genero>Balada</Genero>                
             </Cancion>
             <Cancion idc="2001-002-001-03">
             Tercera del Nos sobran los motivos
@@ -128,9 +116,9 @@
                 <Titulo>Sognando</Titulo>
                 <Duracion>250</Duracion>
                 <Genero>Balada</Genero>
-                <Version anio="2006">
+                <Version anio="2009">
                     <Titulo>Durmiendo</Titulo>
-                    <IML>iml2006.xml</IML>
+                    <IML>iml2009.xml</IML>
                 </Version>
             </Cancion>
             <Cancion idc="2001-003-001-03">
