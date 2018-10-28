@@ -56,12 +56,16 @@ public class XML_XSD
         while(!files.isEmpty())
         {
             url = (String) files.getFirst();
+            System.out.println(url);
+            //System.out.println(url);
+            
             if(!leidos.contains(url))
             {
                 try{
                     //Generacion del arbol DOM tras el parseo. Generará un error el método parse si el documento no  es well-formed. Una SAXException
                 //Saltará la clase de gestión de errores en caso de que los contenga (no válido según el schema xml definido).            
                     doc = db.parse(url);
+                    leidos.add(url);
                     //System.out.print("Esta parseando");
                 }catch(SAXException e){
                     e.printStackTrace();
@@ -99,11 +103,14 @@ public class XML_XSD
                     //int num_url = urls.getLength();
                     //System.out.println(num_url);
                     anios_hash.add(itemAnio.getTextContent());
+                    System.out.println("--------------------------------");
                     for(int i = 0;i<urls.getLength();i++)
                     {
                         Node itemUrl = urls.item(i);                        
-                        files.add(itemUrl.getTextContent());
+                        files.add(itemUrl.getTextContent());                        
+                        System.out.println(itemUrl.getTextContent());                        
                     }
+                    System.out.println("--------------------------------");
                 }
             }
             files.removeFirst();           
@@ -125,24 +132,28 @@ class XML_XSD_ErrorHandler extends DefaultHandler {
     {
         err = true;
         strWarning = "Warning: "+spe.toString(); 
-        System.out.println("Warning: "+spe.toString()); 
+        System.out.println("Warning: "+spe.toString());
+        //err = false; 
     }
     public void error (SAXParseException spe) throws SAXException 
     { 
         err = true;
         strError = "Error: "+spe.toString();
-        System.out.println("Error: "+spe.toString()); 
+        System.out.println("Error: "+spe.toString());
+        //err = false; 
     }
     public void fatalerror (SAXParseException spe) throws SAXException 
     {
         err = true;
         strFatalError = "Fatal Error: "+spe.toString();
         System.out.println("Fatal Error: "+spe.toString());
+        //err = false;
     }
     public boolean hasError()
     {
         if(err)
         {
+            err=false;
             return true;
         }
         else

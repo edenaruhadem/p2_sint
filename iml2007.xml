@@ -8,8 +8,8 @@
                     <Premio>LamparaMinera</Premio>
                 </Premios>
                 <Interprete>Bruce Springsteen</Interprete>
-                <Cancion idc="2001-001-001-01">
-                    <Titulo>Born to run</Titulo>
+                <Cancion idc = "2001-001-001-01">
+                    <!--<Titulo>Born to run</Titulo>-->
                     <Duracion>240</Duracion>
                     <Genero>Rock</Genero>
                     Primera del Born to run                    

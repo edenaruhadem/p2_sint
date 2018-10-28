@@ -38,21 +38,20 @@ public class Sint48P2 extends HttpServlet {
     	public static Error error=null; //Objeto error
     	public static String url;
 
-	//Declaración de estructuras de datos
-	HashMap<String,Document> mapDocs = new HashMap<String,Document>(); //ficheros correctos. key = anio, value = document
-	//HashSet<Document> correctos = new HashSet<Document>();
+	    //Declaración de estructuras de datos
+	    public static HashMap<String,Document> mapDocs = new HashMap<String,Document>(); //ficheros correctos. key = anio, value = document
+	    //HashSet<Document> correctos = new HashSet<Document>();
 	
 	
         ArrayList<String>Anios = new ArrayList<String>();
-        ArrayList<String>Discos = new ArrayList<String>();
+        ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
         ArrayList<String>Canciones = new ArrayList<String>();
         ArrayList<String>Resultado = new ArrayList<String>();
         //public static ArrayList<String>fichErroneos = new ArrayList<String>();
         ArrayList<String>listaErrores= new ArrayList<String>();       
         
     public void init(ServletConfig config) throws ServletException
-    {
-        //super.init(config);
+    {        
 	//----------------Aquí hay que leer los ficheros. Eliminar erróneos para el procesado posterior-------------    	
 	//Creada batería de parsers
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -86,14 +85,17 @@ public class Sint48P2 extends HttpServlet {
         //files.add("http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/iml2001.xml");
 	while(!listaFicheros.isEmpty())
         {
-        url = listaFicheros.getFirst();
+        url = (String) listaFicheros.getFirst();
+        //System.out.println(url);
         //System.out.println(url);
             if(!leidos.contains(url))
             {
                 try{
                     //Generacion del arbol DOM tras el parseo. Generará un error el método parse si el documento no  es well-formed. 				Una SAXException
                 //Saltará la clase de gestión de errores en caso de que los contenga (no válido según el schema xml 				definido).            
+                    
                     doc = db.parse(url);
+                    leidos.add(url);
                     //System.out.print("Esta parseando");
                 }catch(SAXException e){
                     e.printStackTrace();
@@ -134,6 +136,9 @@ public class Sint48P2 extends HttpServlet {
                     {
                         Node itemUrl = urls.item(i);                        
                         listaFicheros.add(itemUrl.getTextContent());
+                        /*System.out.println("--------------------------------");
+                        System.out.println(itemUrl.getTextContent());
+                        System.out.println("--------------------------------");*/
                     }
                 }//else hasError
             }//if leidos containsURL
@@ -167,7 +172,7 @@ public class Sint48P2 extends HttpServlet {
             	case "01": doGetFase01(out,auto,res); break;
             	case "02": doGetFase02(out,auto,listaErrores,res); break;
             	case "11": doGetFase11(out,auto,res,mapDocs,Anios); break;
-            	case "12": doGetFase12(out,auto,res,anio, Discos); break;
+            	case "12": doGetFase12(out,auto,res,anio, listaDiscos); break;
             	case "13": doGetFase13(out,auto,res,anio,idd, Canciones); break;
             	case "14": doGetFase14(out,auto,res,anio,idd,idc, Resultado); break;
         	}
@@ -319,16 +324,16 @@ public class Sint48P2 extends HttpServlet {
             doXmlF11(res,Anios);
         }        
     }//doGetFase11
-    public void doGetFase12(PrintWriter out, String auto, HttpServletResponse res, String anio, ArrayList<String> Discos)throws IOException
+    public void doGetFase12(PrintWriter out, String auto, HttpServletResponse res, String anio, ArrayList<Disco> listaDiscos)throws IOException
     {        
-        Discos = getC1Discos(anio);
+        listaDiscos = getC1Discos(anio, listaDiscos);
         if(auto==null)
         {
-             doHtmlF12(out,anio, Discos);                
+             doHtmlF12(out,anio, listaDiscos);                
         }
         else if(auto.equals("si"))
         {
-            doXmlF12(res,anio,Discos);
+            doXmlF12(res,anio,listaDiscos);
         }       
         
     }//doGetFase12
@@ -367,8 +372,32 @@ public static ArrayList<String> getC1Anios(HashMap<String,Document> mapDocs, Arr
 	return Anios;    
 }
 
-public static ArrayList<String> getC1Discos (String anio) //Type Disco
+public static ArrayList<Disco> getC1Discos (String anio, ArrayList<Disco> listaDiscos) //Type Disco
 {
+    for (String key:mapDocs.keySet()){
+        if(anio.equals(key))
+        {
+            Document res = mapDocs.get(key);
+        }
+    }
+    Element raiz = doc.getDocumentElement(); //Obtencion del elemento Songs
+    NodeList discos = raiz.getElementsByTagName("Disco");
+    for(int i = 0;i<discos.getLength();i++) //El acceso al texto de IML produce redirecciones a nuevos documentos
+        {
+            Node itemDisco = discos.item(i);
+            String lang = itemDisco.getAttributes("lang");
+            String idd = itemDisco.getAttributes("idd");                        
+            listaFicheros.add(itemUrl.getTextContent());                      
+        }    
+
+
+
+    disco = new Disco();
+
+    
+
+    //Bucle con los discos encontrados
+
         String[] discos = {"disco1","disco2","disco3","disco4"};
         return new ArrayList<String>(Arrays.asList(discos));   //Type Disco
 
@@ -428,7 +457,7 @@ public void doXmlF11(HttpServletResponse res, ArrayList<String> Anios)throws IOE
         out.println("</anios>");
 }
 
-public void doHtmlF12(PrintWriter out, String anio, ArrayList<String> Discos)
+public void doHtmlF12(PrintWriter out, String anio, ArrayList<String> listaDiscos)
 {
         out.println("<html>");
         out.println("<head>");
@@ -462,7 +491,7 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList<String> Discos)
         out.println("</footer>");
         out.println("</html>");
 }
-public void doXmlF12(HttpServletResponse res, String anio, ArrayList<String> Discos)throws IOException
+public void doXmlF12(HttpServletResponse res, String anio, ArrayList<String> listaDiscos)throws IOException
     {
             res.setContentType("text/xml");
             PrintWriter out = res.getWriter();            
@@ -613,28 +642,33 @@ class Error extends DefaultHandler { //Clase gestión errores parseo
     {        
         err = true;
         warns = "Warning: "+spe.toString(); 
-        System.out.println("Warning: "+spe.toString()); 
+        System.out.println("Warning: "+spe.toString());
+        //err = false; 
     }
     public void error (SAXParseException spe) throws SAXException 
     {         
         err = true;
         errores = "Error: "+spe.toString();
-        System.out.println("Error: "+spe.toString()); 
+        System.out.println("Error: "+spe.toString());
+        //err = false; 
     }
     public void fatalerror (SAXParseException spe) throws SAXException 
     {        
         err = true;
         fatalErr = "Fatal Error: "+spe.toString();
         System.out.println("Fatal Error: "+spe.toString());
+        //err = false;
     }
     public boolean hasError()
     {
         if(err)
         {
+            err = false;
             return true;
         }
         else
         {
+            err = false;
             return false;
         }
     }
@@ -652,4 +686,15 @@ class Error extends DefaultHandler { //Clase gestión errores parseo
         return fatalErr;
     }
 }
+class Disco {
+    public Disco() {}
+    private String Titulo = "";
+	private String IDD = "";
+    private String Interprete = ""; 
+    private String Idiomas = "";
+}
+
+
+
+
 

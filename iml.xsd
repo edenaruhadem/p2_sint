@@ -19,8 +19,8 @@
         <xs:sequence>
             <xs:element name="Disco" type="complexTypeDisco" maxOccurs = "unbounded"/>   
         </xs:sequence>
-        <xs:attribute name="pais" type="xs:string"/>
-        <xs:attribute name="lang" type="simpleTypeAttlang"/>        
+        <xs:attribute name="pais" type="xs:string" use="required"/>
+        <xs:attribute name="lang" type="simpleTypeAttlang" use="required"/>        
     </xs:complexType>
 
     <xs:simpleType name="simpleTypeAttlang">
@@ -36,7 +36,7 @@
             <xs:element name ="Interprete" type="xs:string"/>
             <xs:element name ="Cancion" type="complexTypeCancion" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="idd" type="simpleTypeAttidd"/>
+        <xs:attribute name="idd" type="simpleTypeAttidd" use="required"/>
         <xs:attribute name="langs" type="simpleTypeAttlangs"/>    
     </xs:complexType>
 
@@ -73,7 +73,7 @@
             <xs:element name="Genero" type="simpleTypeGenero" maxOccurs ="4"/>
             <xs:element name="Version" type="complexTypeVersion" minOccurs="0"/>            
         </xs:sequence>
-        <xs:attribute name="idc" type="simpleTypeAttidc"/>                                                                      
+        <xs:attribute name="idc" type="simpleTypeAttidc" use="required"/>                                                                      
     </xs:complexType>
 
     <xs:simpleType name="simpleTypeAttidc">
@@ -113,7 +113,7 @@
             </xs:choice>
             <xs:element name="IML" type="xs:string" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name="anio" type="xs:string"/>    
+        <xs:attribute name="anio" type="xs:string" use="required"/>    
     </xs:complexType>
 
     <xs:element name="Songs" type="complexSongs"></xs:element>

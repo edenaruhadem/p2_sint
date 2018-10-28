@@ -57,7 +57,7 @@
         <Disco idd="2001-002-001" langs="en es">
             <Titulo>Nos sobran los motivos</Titulo>
             <Interprete>Joaquín Sabina</Interprete>
-            <Cancion idc="2001-002-001-01">
+            <Cancion>
                 <Titulo>Nos sobran los motivos</Titulo>
                 <Duracion>230</Duracion>
                 <Genero>Pop</Genero>
