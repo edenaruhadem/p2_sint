@@ -431,7 +431,7 @@ public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type
     String atributoDos = null;
     String atributoTres = null;
     String atributoCuatro = null;
-    ArrayList<String> atributoCinco = new ArrayList<String>();
+    String atributoCinco = null;
     //String atributoCinco[] = {""};
     for (String key:mapDocs.keySet()){
         if(anio.equals(key))
@@ -479,7 +479,8 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
     String atributoDos = null;
     String atributoTres = null;
     String atributoCuatro = null;
-    ArrayList<String> atributoCinco = new ArrayList<String>();
+    String atributoCinco = null;
+    //ArrayList<String> atributoCinco = new ArrayList<String>();
     //String atributoCinco[] = {""};
     Document res = null;
     Boolean flag = false;
@@ -501,8 +502,7 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
         }
     }
     /*for (String key:mapDocs.keySet())    
-    {*/ 
-        
+    {*/        
     for (String key:mapDocs.keySet())
     {
         res = mapDocs.get(key);
@@ -530,9 +530,9 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                         flag = true;                        
                     }
                 }
-                else if(flag = true)
+                else if(flag)
                 {
-                    if(childDiscos.item(j).getNodeName().equals("Premios"))
+                    /*if(childDiscos.item(j).getNodeName().equals("Premios"))
                     {
                         Node itemPremios = childDiscos.item(j);
                         NodeList childPremios = itemPremios.getChildNodes();
@@ -546,7 +546,7 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                                 }                                
                             }
                         }                                              
-                    }
+                    }*/
                     if(childDiscos.item(j).getNodeName().equals("Cancion"))
                     {
                         Node itemcancion = childDiscos.item(j);
@@ -565,7 +565,11 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                             if(childCancion.item(k).getNodeName().equals("Duracion"))
                             {
                                 atributoTres = childCancion.item(k).getTextContent();
-                            }                
+                            }
+                            if(childCancion.item(k).getNodeName().equals("#text"))
+                            {
+                                atributoCinco = childCancion.item(k).getNodeValue();
+                            }                 
                         }
                         listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco));                       
                     }
@@ -759,16 +763,15 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         for(int i=0;i<Resultado.size();i++)
         {
             Cancion obj = Resultado.get(i);
-            ArrayList<String> premios = obj.getPremios(obj);
-            if(premios.isEmpty())
+            //ArrayList<String> premios = obj.getPremios(obj);
+            /*if(premios.isEmpty())
             {
                 out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"'</p>");
             }
             else
-            {
-                
-            }            
-            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");
+            {*/
+            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"'</p>");  
+            //}           
         }        
         out.println("</form>");
         out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
@@ -795,7 +798,7 @@ public void doXmlF14(HttpServletResponse res,String idc, ArrayList<Cancion> Resu
                 for(int i=0;i<Resultado.size();i++)
                 {
                 Cancion obj = Resultado.get(i);
-                out.println("<cancion premios="+obj.getPremios(obj)+">"+obj.getTitulo(obj)+"</cancion>");
+                out.println("<cancion decripcion="+obj.getDescripcion(obj)+">"+obj.getTitulo(obj)+"</cancion>");
                 }
                 out.println("</canciones>");                                                       
             }        
@@ -905,19 +908,20 @@ class Cancion {
 	private String iDC = "";
     private String genero = ""; 
     private String duracion = "";
-    private ArrayList<String> premios = new ArrayList<String>();
+    private String desc = "";
+    //private ArrayList<String> premios = new ArrayList<String>();
 
-    public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro, ArrayList<String> atributoCinco) 
+    public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro, String atributoCinco/*ArrayList<String> atributoCinco*/) 
     {
         titulo = atributoUno;
         genero = atributoDos;
         duracion = atributoTres;
         iDC = atributoCuatro;
-
-        for (int i = 0;i<atributoCinco.size();i++)
+        desc = atributoCinco;
+        /*for (int i = 0;i<atributoCinco.size();i++)
         {
             premios.add(atributoCinco.get(i));
-        }
+        }*/
         
     }
     public String getTitulo(Cancion c){        
@@ -932,9 +936,12 @@ class Cancion {
     public String getIdc(Cancion c){        
         return c.iDC;
     }
-    public ArrayList<String> getPremios(Cancion c){      
-        return c.premios;
+    public String getDescripcion(Cancion c){        
+        return c.desc;
     }
+    /*public ArrayList<String> getPremios(Cancion c){      
+        return c.premios;
+    }*/
 }
 
 
