@@ -47,11 +47,11 @@ public class Sint48P2 extends HttpServlet {
         public static ArrayList<String>Anios = new ArrayList<String>();
         public static ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
         public static ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
-        ArrayList<String>Resultado = new ArrayList<String>();
+        public static ArrayList<Cancion>Resultado = new ArrayList<Cancion>();
         //public static ArrayList<String>fichErroneos = new ArrayList<String>();
-        ArrayList<String>listaErrores= new ArrayList<String>();
-        ArrayList<String>listaEFatales = new ArrayList<String>();
-        ArrayList<String>listaWarnings = new ArrayList<String>();               
+        public static ArrayList<String>listaErrores= new ArrayList<String>();
+        public static ArrayList<String>listaEFatales = new ArrayList<String>();
+        public static  ArrayList<String>listaWarnings = new ArrayList<String>();               
         
     public void init(ServletConfig config) throws ServletException
     {        
@@ -177,7 +177,7 @@ public class Sint48P2 extends HttpServlet {
             	case "11": doGetFase11(out,auto,res); break;
             	case "12": doGetFase12(out,auto,res,anio); break;
             	case "13": doGetFase13(out,auto,res,anio,idd); break;
-            	case "14": doGetFase14(out,auto,res,anio,idd,idc, Resultado); break;
+            	case "14": doGetFase14(out,auto,res,anio,idd,idc); break;
         	}
 
 	}        
@@ -353,7 +353,7 @@ public class Sint48P2 extends HttpServlet {
         listaCanciones = getC1Canciones(anio, idd);
         if(auto==null)
         {
-              doHtmlF13(out,anio, idd, listaCanciones);                
+            doHtmlF13(out,anio, idd, listaCanciones);                
         }
         else if(auto.equals("si"))
         {
@@ -361,7 +361,7 @@ public class Sint48P2 extends HttpServlet {
         }       
         
     }//doGetFase13
-    public void doGetFase14(PrintWriter out, String auto, HttpServletResponse res, String anio, String idd, String idc, ArrayList<String> Resultado)throws IOException
+    public void doGetFase14(PrintWriter out, String auto, HttpServletResponse res, String anio, String idd, String idc)throws IOException
     {        
         Resultado = getC1Resultado(anio, idd, idc);
         if(auto==null)
@@ -402,7 +402,7 @@ public static ArrayList<Disco> getC1Discos (String anio) //Type Disco
         {
             Node itemDisco = discos.item(i);
             atributoTres=itemDisco.getAttributes().getNamedItem("idd").getTextContent();
-            atributoCuatro=itemDisco.getAttributes().getNamedItem("langs").getTextContent();
+            //atributoCuatro=itemDisco.getAttributes().getNamedItem("langs").getTextContent();
             /*if(atributoCuatro.equals(null))
             {
 
@@ -431,6 +431,8 @@ public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type
     String atributoDos = null;
     String atributoTres = null;
     String atributoCuatro = null;
+    ArrayList<String> atributoCinco = new ArrayList<String>();
+    //String atributoCinco[] = {""};
     for (String key:mapDocs.keySet()){
         if(anio.equals(key))
         {
@@ -464,23 +466,125 @@ public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type
                     atributoTres = itemCancionChild.item(j).getTextContent();
                 }                
             }
-            listaCanciones.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro));
+            listaCanciones.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco));
         }
     }
     return listaCanciones;
 }
 public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc) //Todas las canciones de un interprete que duren menos que una elegida
 {
-
-
-
-
-
-
-
-
-        /*String[] resultado = {"resultado1","resultado2","resultado3","resultado4"};
-        return new ArrayList<String>(Arrays.asList(resultado));  //Type Cancion*/
+    String dur = null;
+    String interprete = null;
+    String atributoUno = null;
+    String atributoDos = null;
+    String atributoTres = null;
+    String atributoCuatro = null;
+    ArrayList<String> atributoCinco = new ArrayList<String>();
+    //String atributoCinco[] = {""};
+    Document res = null;
+    Boolean flag = false;
+    ArrayList<Cancion> listares = new ArrayList<Cancion>();    
+    for(int i = 0;i<listaCanciones.size();i++)
+    {
+        Cancion objc = listaCanciones.get(i);        
+        if(objc.getIdc(objc).equals(idc))
+        {            
+            dur = objc.getDuracion(objc); 
+        }
+    }
+    for(int i = 0;i<listaDiscos.size();i++)
+    {
+        Disco objd = listaDiscos.get(i);        
+        if(objd.getIDD(objd).equals(idd))
+        {
+            interprete = objd.getInterprete(objd); 
+        }
+    }
+    /*for (String key:mapDocs.keySet())    
+    {*/ 
+        
+    for (String key:mapDocs.keySet())
+    {
+        res = mapDocs.get(key);
+    //Iterator it = mapDocs.entrySet().iterator();
+    //while (it.hasNext()) 
+    //{
+        //Map.Entry e = (Map.Entry)it.next();
+        //res = (Document)e.getValue();
+        //res = entry.getValue();    
+        //res = mapDocs.get(key);
+        Element raiz = res.getDocumentElement();
+        NodeList nodeDiscos = raiz.getElementsByTagName("Disco");
+        for(int i = 0;i<nodeDiscos.getLength();i++)
+        {
+            Node itemDisco = nodeDiscos.item(i);
+            NodeList childDiscos = itemDisco.getChildNodes();            
+            for (int j=0;j<childDiscos.getLength();j++)
+            {
+                if(childDiscos.item(j).getNodeName().equals("Interprete"))
+                {
+                    //NodeList sibInterprete = childDiscos.item(j).getNextSibling();
+                    String nameInt = childDiscos.item(j).getTextContent();
+                    if(nameInt.equals(interprete))
+                    {
+                        flag = true;                        
+                    }
+                }
+                else if(flag = true)
+                {
+                    if(childDiscos.item(j).getNodeName().equals("Premios"))
+                    {
+                        Node itemPremios = childDiscos.item(j);
+                        NodeList childPremios = itemPremios.getChildNodes();
+                        if(childPremios.getLength()>0)
+                        {
+                            for(int k =0;k<childPremios.getLength();k++)
+                            {
+                                if(childPremios.item(k).getNodeName().equals("Premio"))
+                                {
+                                    atributoCinco.add(childPremios.item(k).getTextContent());
+                                }                                
+                            }
+                        }                                              
+                    }
+                    if(childDiscos.item(j).getNodeName().equals("Cancion"))
+                    {
+                        Node itemcancion = childDiscos.item(j);
+                        atributoCuatro=itemcancion.getAttributes().getNamedItem("idc").getTextContent();
+                        NodeList childCancion = itemcancion.getChildNodes();
+                        for(int k = 0;k<childCancion.getLength(); k++)
+                        {
+                            if(childCancion.item(k).getNodeName().equals("Titulo"))
+                            {
+                                atributoUno = childCancion.item(k).getTextContent();
+                            }
+                            if(childCancion.item(k).getNodeName().equals("Genero"))
+                            {
+                                atributoDos = childCancion.item(k).getTextContent();
+                            }
+                            if(childCancion.item(k).getNodeName().equals("Duracion"))
+                            {
+                                atributoTres = childCancion.item(k).getTextContent();
+                            }                
+                        }
+                        listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco));                       
+                    }
+                }
+            }
+            flag = false;
+        }       
+    }
+    //Recorre listares y obtener las duraciones comparando cada una con la elegida. Si es menor, meterlo en ña ñista resultado
+    for (int i = 0;i<listares.size();i++)
+    {
+        Cancion obj = listares.get(i);
+        int durobj = Integer.parseInt(obj.getDuracion(obj));
+        if(durobj < Integer.parseInt(dur))
+        {
+            Resultado.add(obj);
+        }
+    }
+    return Resultado;        
 }
 public void doHtmlF11(PrintWriter out, ArrayList<String> Anios)
 {
@@ -602,7 +706,7 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancio
         for(int i=0;i<listaCanciones.size();i++)
         {
         Cancion c = listaCanciones.get(i);
-        out.println("<li><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+">- Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+"</input></li>");        
+        out.println("<li><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+">- Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+" seg.'</input></li>");        
         }        
         out.println("</ol>");
         out.println("<br></br>");    
@@ -639,13 +743,13 @@ public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> lis
             }
             
     }
-public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList<String> Resultado)
+public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
 {
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
         out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
@@ -654,7 +758,17 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         out.println("<h3>Este es el resultado:</h3>");
         for(int i=0;i<Resultado.size();i++)
         {
-        out.println("<p>"+Resultado.get(i)+"</p>");
+            Cancion obj = Resultado.get(i);
+            ArrayList<String> premios = obj.getPremios(obj);
+            if(premios.isEmpty())
+            {
+                out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"'</p>");
+            }
+            else
+            {
+                
+            }            
+            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");
         }        
         out.println("</form>");
         out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
@@ -666,7 +780,7 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         out.println("</footer>");
         out.println("</html>"); 
 }
-public void doXmlF14(HttpServletResponse res,String idc, ArrayList<String> Resultado)throws IOException
+public void doXmlF14(HttpServletResponse res,String idc, ArrayList<Cancion> Resultado)throws IOException
     {
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();
@@ -680,7 +794,8 @@ public void doXmlF14(HttpServletResponse res,String idc, ArrayList<String> Resul
                 out.println("<canciones>");
                 for(int i=0;i<Resultado.size();i++)
                 {
-                out.println("<cancion>"+Resultado.get(i)+"</cancion>");
+                Cancion obj = Resultado.get(i);
+                out.println("<cancion premios="+obj.getPremios(obj)+">"+obj.getTitulo(obj)+"</cancion>");
                 }
                 out.println("</canciones>");                                                       
             }        
@@ -790,13 +905,20 @@ class Cancion {
 	private String iDC = "";
     private String genero = ""; 
     private String duracion = "";
+    private ArrayList<String> premios = new ArrayList<String>();
 
-    public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro) 
+    public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro, ArrayList<String> atributoCinco) 
     {
         titulo = atributoUno;
         genero = atributoDos;
         duracion = atributoTres;
         iDC = atributoCuatro;
+
+        for (int i = 0;i<atributoCinco.size();i++)
+        {
+            premios.add(atributoCinco.get(i));
+        }
+        
     }
     public String getTitulo(Cancion c){        
         return c.titulo;
@@ -809,6 +931,9 @@ class Cancion {
     }
     public String getIdc(Cancion c){        
         return c.iDC;
+    }
+    public ArrayList<String> getPremios(Cancion c){      
+        return c.premios;
     }
 }
 
