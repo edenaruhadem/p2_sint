@@ -44,12 +44,14 @@ public class Sint48P2 extends HttpServlet {
 	    //HashSet<Document> correctos = new HashSet<Document>();
 	
 	
-        ArrayList<String>Anios = new ArrayList<String>();
-        ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
-        ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
+        public static ArrayList<String>Anios = new ArrayList<String>();
+        public static ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
+        public static ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
         ArrayList<String>Resultado = new ArrayList<String>();
         //public static ArrayList<String>fichErroneos = new ArrayList<String>();
-        ArrayList<String>listaErrores= new ArrayList<String>();       
+        ArrayList<String>listaErrores= new ArrayList<String>();
+        ArrayList<String>listaEFatales = new ArrayList<String>();
+        ArrayList<String>listaWarnings = new ArrayList<String>();               
         
     public void init(ServletConfig config) throws ServletException
     {        
@@ -111,7 +113,7 @@ public class Sint48P2 extends HttpServlet {
                     if(!error.getWarning().equals(""))
                     {
                         //System.out.print("Hay warning");
-                        listaErrores.add(error.getWarning());  //Hay que añadir tipos error
+                        listaWarnings.add(error.getWarning());  //Hay que añadir tipos error
                     }
                     if(!error.getErrores().equals(""))
                     {
@@ -121,7 +123,7 @@ public class Sint48P2 extends HttpServlet {
                     if(!error.getFatalError().equals(""))
                     {
                         //System.out.print("Hay errores fatales");
-                        listaErrores.add(error.getFatalError());
+                        listaEFatales.add(error.getFatalError());
                     }
                 }//if hasError()
                 else
@@ -171,10 +173,10 @@ public class Sint48P2 extends HttpServlet {
 		switch(fase)
         	{                        
             	case "01": doGetFase01(out,auto,res); break;
-            	case "02": doGetFase02(out,auto,listaErrores,res); break;
-            	case "11": doGetFase11(out,auto,res,mapDocs,Anios); break;
-            	case "12": doGetFase12(out,auto,res,anio, listaDiscos); break;
-            	case "13": doGetFase13(out,auto,res,anio,idd, listaCanciones); break;
+            	case "02": doGetFase02(out,auto,listaWarnings,listaErrores,listaEFatales,res); break;
+            	case "11": doGetFase11(out,auto,res); break;
+            	case "12": doGetFase12(out,auto,res,anio); break;
+            	case "13": doGetFase13(out,auto,res,anio,idd); break;
             	case "14": doGetFase14(out,auto,res,anio,idd,idc, Resultado); break;
         	}
 
@@ -226,23 +228,25 @@ public class Sint48P2 extends HttpServlet {
         out.println("<status>OK</status>");
         out.println("</service>");
     }
-    public void doGetFase02(PrintWriter out, String auto, ArrayList<String> listaErrores, HttpServletResponse res)throws IOException
+    public void doGetFase02(PrintWriter out, String auto, ArrayList<String> listaWarnings, ArrayList<String> listaErrores, ArrayList<String> listaEFatales, HttpServletResponse res)throws IOException
     {
         if(auto==null)
         {
-            doHtmlF02(out, listaErrores);                
+            doHtmlF02(out, listaWarnings,listaErrores, listaEFatales);                
         }
         else if(auto.equals("si"))
         {
-            doXmlF02(res, listaErrores);
+            doXmlF02(res, listaWarnings, listaErrores, listaEFatales);
         }         
     }//doGetFase02
-    public void doHtmlF02(PrintWriter out, ArrayList<String> listaErrores)
+    public void doHtmlF02(PrintWriter out,ArrayList<String> listaWarnings, ArrayList<String> listaErrores, ArrayList<String> listaEFatales)
     {
 	//int warn = warns.size();
 	//int err = errores.size();
     //int fErr = fatalErr.size();
-    int numError = listaErrores.size();
+    int numError = listaEFatales.size();
+    int numEFatal = listaErrores.size();
+    int numWarning = listaWarnings.size();
 
     out.println("<html>");
     out.println("<head>");
@@ -253,21 +257,30 @@ public class Sint48P2 extends HttpServlet {
     out.println("<body>");
     out.println("<h1>Servicio de consulta de canciones</h1>");
 	//Ficheros con warnings
-	out.println("<h2>Se han encontrado "+numError+" ficheros con errores.</h2>");
-	for (int i=0;i<numError;i++)
-	{
-	out.println("<p>"+listaErrores.get(i)+"</p>");
-	}
-	/*out.println("<h2>Se han encontrado "+err+" ficheros con errores</h2>");
-	for (int i=0;i<err;i++)
-	{
-	out.println("<p>"+errores.get(i)+"</p>");
-	}              
-        out.println("<h2>Se han encontrado "+fErr+" ficheros con errores fatales</h2>");
-	for (int i=0;i<fErr;i++)
-	{
-	out.println("<p>"+fatalErr.get(i)+"</p>");
-	}*/               
+    out.println("<h2>Se han encontrado "+numWarning+" ficheros con warnings.</h2>");
+    if(numWarning>0)
+    {
+        for (int i=0;i<numWarning;i++)
+	    {
+	        out.println("<p>"+listaWarnings.get(i)+"</p>");
+	    }
+    }	
+    out.println("<h2>Se han encontrado "+numError+" ficheros con errores</h2>");
+    if(numError>0)
+    {
+        for (int i=0;i<listaErrores.size();i++)
+	    {
+	        out.println("<p>"+listaErrores.get(i)+"</p>");
+        }
+    }	              
+    out.println("<h2>Se han encontrado "+numEFatal+" ficheros con errores fatales</h2>");
+    if(numEFatal>0)
+    {
+        for (int i=0;i<numEFatal;i++)
+	    {
+	        out.println("<p>"+listaEFatales.get(i)+"</p>");
+	    } 
+    }	              
     out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atras</button>");
     out.println("</body>");
     out.println("<footer>");
@@ -275,24 +288,22 @@ public class Sint48P2 extends HttpServlet {
     out.println("</footer>");
     out.println("</html>");
     }//doHtmlF02
-    public void doXmlF02(HttpServletResponse res, ArrayList<String> listaErrores)throws IOException
+    public void doXmlF02(HttpServletResponse res,ArrayList<String> listaWarnings, ArrayList<String> listaErrores, ArrayList<String> listaEFatales)throws IOException
     {    
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
         out.println("<errores>");
         out.println("<warnings>");
-        out.println("<warning>");
-        out.println("<file>URL del fichero que provoca el warning</file>");
+        for(int i=0;i<listaWarnings.size();i++)
+        {
+        out.println("<warning>");        
+        out.println("<file>URL del fichero que provoca el warning"+listaWarnings.get(i)+"</file>");
         out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
         out.println("</warning>");
-        out.println("<warning>");
-        out.println("<file>URL del fichero que provoca el warning</file>");
-        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
-        out.println("</warning>");
+        }   
         out.println("</warnings>");
-        out.println("<errors>");
-        
+        out.println("<errors>");        
         for(int i=0;i<listaErrores.size();i++)
         {
         out.println("<error>");
@@ -302,20 +313,19 @@ public class Sint48P2 extends HttpServlet {
         }        
         out.println("</errors>");
         out.println("<fatalerrors>");
+        for(int i =0;i<listaEFatales.size();i++)
+        {
         out.println("<fatalerror>");
-        out.println("<file>URL del fichero que provoca el fatal error</file>");
+        out.println("<file>URL del fichero que provoca el fatal error"+listaEFatales.get(i)+"</file>");
         out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
         out.println("</fatalerror>");
-        out.println("<fatalerror>");
-        out.println("<file>URL del fichero que provoca el fatal error</file>");
-        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
-        out.println("</fatalerror>");
+        }      
         out.println("</fatalerrors>");
         out.println("</errores>");
     }
-    public void doGetFase11(PrintWriter out, String auto,HttpServletResponse res, HashMap<String,Document> mapDocs, ArrayList<String> Anios)throws IOException
+    public void doGetFase11(PrintWriter out, String auto,HttpServletResponse res)throws IOException
     {        
-        Anios = getC1Anios(mapDocs, Anios); //Anios es un array list <string>
+        Anios = getC1Anios(); //Anios es un array list <string>
         if(auto==null)
         {
             doHtmlF11(out,Anios);                
@@ -325,9 +335,9 @@ public class Sint48P2 extends HttpServlet {
             doXmlF11(res,Anios);
         }        
     }//doGetFase11
-    public void doGetFase12(PrintWriter out, String auto, HttpServletResponse res, String anio, ArrayList<Disco> listaDiscos)throws IOException
+    public void doGetFase12(PrintWriter out, String auto, HttpServletResponse res, String anio)throws IOException
     {        
-        listaDiscos = getC1Discos(anio, listaDiscos);
+        listaDiscos = getC1Discos(anio);
         if(auto==null)
         {
              doHtmlF12(out,anio, listaDiscos);                
@@ -338,9 +348,9 @@ public class Sint48P2 extends HttpServlet {
         }       
         
     }//doGetFase12
-    public void doGetFase13(PrintWriter out, String auto,HttpServletResponse res, String anio, String idd, ArrayList<Cancion> listaCanciones)throws IOException
+    public void doGetFase13(PrintWriter out, String auto,HttpServletResponse res, String anio, String idd)throws IOException
     {        
-        listaCanciones = getC1Canciones(anio, idd, listaCanciones);
+        listaCanciones = getC1Canciones(anio, idd);
         if(auto==null)
         {
               doHtmlF13(out,anio, idd, listaCanciones);                
@@ -365,7 +375,7 @@ public class Sint48P2 extends HttpServlet {
         
     }//doGetFase14     
     
-public static ArrayList<String> getC1Anios(HashMap<String,Document> mapDocs, ArrayList<String> Anios)
+public static ArrayList<String> getC1Anios()
 {	
 	for(String key:mapDocs.keySet()){
         Anios.add(key);
@@ -373,13 +383,13 @@ public static ArrayList<String> getC1Anios(HashMap<String,Document> mapDocs, Arr
 	return Anios;    
 }
 
-public static ArrayList<Disco> getC1Discos (String anio, ArrayList<Disco> listaDiscos) //Type Disco
+public static ArrayList<Disco> getC1Discos (String anio) //Type Disco
 {
     Document res = null;
     String atributoUno = null;
     String atributoDos = null;
     String atributoTres = null;
-    //String atributoCuatro = null;
+    String atributoCuatro = null;    
     for (String key:mapDocs.keySet()){
         if(anio.equals(key))
         {
@@ -391,12 +401,14 @@ public static ArrayList<Disco> getC1Discos (String anio, ArrayList<Disco> listaD
     for(int i = 0;i<discos.getLength();i++) //El acceso al texto de IML produce redirecciones a nuevos documentos
         {
             Node itemDisco = discos.item(i);
-            itemDisco.getAttributes();
-            //NodeList idisco = itemDisco.getElementsByTagName("idd");
-            //atributoTres = idisco.getTextContent();
-            //Element langdisco = itemDisco.getElementsByTagName("lang");                                  
-            NodeList itemDiscoChild = itemDisco.getChildNodes();
-            
+            atributoTres=itemDisco.getAttributes().getNamedItem("idd").getTextContent();
+            atributoCuatro=itemDisco.getAttributes().getNamedItem("langs").getTextContent();
+            /*if(atributoCuatro.equals(null))
+            {
+
+            }*/                                              
+            NodeList itemDiscoChild = itemDisco.getChildNodes();         
+
             for(int j = 0;j<itemDiscoChild.getLength(); j++)
             {
                 if(itemDiscoChild.item(j).getNodeName().equals("Titulo"))
@@ -406,29 +418,69 @@ public static ArrayList<Disco> getC1Discos (String anio, ArrayList<Disco> listaD
                 if(itemDiscoChild.item(j).getNodeName().equals("Interprete"))
                 {
                     atributoDos = itemDiscoChild.item(j).getTextContent();
-                }
-
-                
-
-                /*if(itemDiscoChild.item(j).getAttributes())
-                {
-                    atributoTres = itemDiscoChild.item(j).getTextContent();
-                }*/
+                }                
             }
-            listaDiscos.add(new Disco(atributoUno,atributoDos,atributoTres));                     
+            listaDiscos.add(new Disco(atributoUno,atributoDos,atributoTres, atributoCuatro));                     
         }
     return listaDiscos;
 }
-public static ArrayList<Cancion> getC1Canciones (String anio, String idd, ArrayList<Cancion> listCanciones) //Type Cancion
-{  
-    /*String[] canciones = {"cancion1","cancion2","cancion3","cancion4"};
-        return new ArrayList<String>(Arrays.asList(canciones)); //Type Cancion*/
-
-}
-public static ArrayList<String> getC1Resultado (String anio, String idd, String idc) //Type Cancion
+public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type Cancion
 {
-        String[] resultado = {"resultado1","resultado2","resultado3","resultado4"};
-        return new ArrayList<String>(Arrays.asList(resultado));  //Type Cancion
+    Document res = null;
+    String atributoUno = null;
+    String atributoDos = null;
+    String atributoTres = null;
+    String atributoCuatro = null;
+    for (String key:mapDocs.keySet()){
+        if(anio.equals(key))
+        {
+            res = mapDocs.get(key);
+        }
+    }
+    Element raiz = res.getDocumentElement(); //Obtencion del elemento Songs
+    NodeList canciones = raiz.getElementsByTagName("Cancion");
+    for(int i = 0;i<canciones.getLength();i++) //El acceso al texto de IML produce redirecciones a nuevos documentos
+    {
+        Node itemcancion = canciones.item(i);
+        String stridc=itemcancion.getAttributes().getNamedItem("idc").getTextContent();
+        atributoCuatro = stridc;
+        String substridd = idd.substring(0,12);
+        String substridc = stridc.substring(0,12);
+        if (substridc.equals(substridd))
+        {
+            NodeList itemCancionChild = itemcancion.getChildNodes();
+            for(int j = 0;j<itemCancionChild.getLength(); j++)
+            {
+                if(itemCancionChild.item(j).getNodeName().equals("Titulo"))
+                {
+                    atributoUno = itemCancionChild.item(j).getTextContent();
+                }
+                if(itemCancionChild.item(j).getNodeName().equals("Genero"))
+                {
+                    atributoDos = itemCancionChild.item(j).getTextContent();
+                }
+                if(itemCancionChild.item(j).getNodeName().equals("Duracion"))
+                {
+                    atributoTres = itemCancionChild.item(j).getTextContent();
+                }                
+            }
+            listaCanciones.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro));
+        }
+    }
+    return listaCanciones;
+}
+public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc) //Todas las canciones de un interprete que duren menos que una elegida
+{
+
+
+
+
+
+
+
+
+        /*String[] resultado = {"resultado1","resultado2","resultado3","resultado4"};
+        return new ArrayList<String>(Arrays.asList(resultado));  //Type Cancion*/
 }
 public void doHtmlF11(PrintWriter out, ArrayList<String> Anios)
 {
@@ -494,7 +546,7 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList<Disco> listaDiscos
         for(int i=0;i<listaDiscos.size();i++)
         {
         Disco d = listaDiscos.get(i);            
-        out.println("<li><input type = 'radio' name = 'pidd' value = "+d.getTitulo(d)+">-"+d.getTitulo(d)+"---"+d.getIDD(d)+"---"+d.getInterprete(d)+"</input></li>");        
+        out.println("<li><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+">- Titulo ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Interprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></li>");        
         }        
         out.println("</ol>");
         out.println("<br></br>");    
@@ -524,32 +576,33 @@ public void doXmlF12(HttpServletResponse res, String anio, ArrayList<Disco> list
                 for(int i=0;i<listaDiscos.size();i++)
                 {
                 Disco d = listaDiscos.get(i);               
-                out.println("<disco interprete="+d.getInterprete(d)+">"+d.getTitulo(d)+"</disco>");
+                out.println("<disco idd="+d.getIDD(d)+" interprete="+d.getInterprete(d)+" langs="+d.getIdiomas(d)+">"+d.getTitulo(d)+"</disco>");
                 }
                 out.println("</discos>");                            
             }
     }
-public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancion> Canciones)
+public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancion> listaCanciones)
 {
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
         out.println("<meta charset=utf-8'></meta>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");    
         out.println("<h2>Consulta 1: Año="+anio+", Disco="+idd+"</h2>");
         out.println("<form name = 'miformfase13'>");    
         out.println("<h3>Selecciona una cancion:</h3>");
-	out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");
+	    out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");
         out.println("<input type = 'hidden' name = 'pfase' value = '14'></input>");	
         out.println("<input type = 'hidden' name = 'panio' value = '"+anio+"'></input>");
         out.println("<input type = 'hidden' name = 'pidd' value = '"+idd+"'></input>");
         out.println("<ol>");
-        for(int i=0;i<Canciones.size();i++)
+        for(int i=0;i<listaCanciones.size();i++)
         {
-        out.println("<li><input type = 'radio' name = 'pidc' value = "+Canciones.get(i)+">-"+Canciones.get(i)+"</input></li>");
+        Cancion c = listaCanciones.get(i);
+        out.println("<li><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+">- Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+"</input></li>");        
         }        
         out.println("</ol>");
         out.println("<br></br>");    
@@ -570,19 +623,20 @@ public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> lis
             res.setContentType("text/xml");
             PrintWriter out = res.getWriter();
             out.println("<?xml version='1.0' encoding='utf-8' ?>");
-            /*if(idd==null)
+            if(idd==null)
             {
                 out.println("<wrongRequest>no param:pidd</wrongRequest>");
             }            
             else
             {
                 out.println("<canciones>");
-                for(int i=0;i<Canciones.size();i++)
+                for(int i=0;i<listaCanciones.size();i++)
                 {
-                out.println("<cancion>"+Canciones.get(i)+"</cancion>");
+                Cancion c = listaCanciones.get(i);
+                out.println("<cancion idc="+c.getIdc(c)+" genero="+c.getGenero(c)+" duracion="+c.getDuracion(c)+">"+c.getTitulo(c)+"</cancion>");
                 }
                 out.println("</canciones>");                                         
-            }*/
+            }
             
     }
 public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList<String> Resultado)
@@ -709,12 +763,13 @@ class Disco {
     private String titulo = "";
 	private String iDD = "";
     private String interprete = ""; 
-    //private String idiomas = "";
-    public Disco(String atributoUno, String atributoDos, String atributoTres) 
+    private String idiomas = "";
+    public Disco(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro) 
     {
         titulo = atributoUno;
         interprete = atributoDos;
         iDD = atributoTres;
+        idiomas = atributoCuatro;
     }
     public String getTitulo(Disco d){        
         return d.titulo;
@@ -726,35 +781,34 @@ class Disco {
     public String getInterprete(Disco d){
         return d.interprete;
     }
-    /*public String getIdiomas(String atributo){
-        idiomas = atributo;
-        return idiomas;
-    }*/
+    public String getIdiomas(Disco d){        
+        return d.idiomas;
+    }
 }
 class Cancion {
     private String titulo = "";
-	//private String iDC = "";
+	private String iDC = "";
     private String genero = ""; 
     private String duracion = "";
 
-    public Cancion(String atributoUno, String atributoDos, String atributoTres) 
+    public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro) 
     {
         titulo = atributoUno;
         genero = atributoDos;
         duracion = atributoTres;
-        //iDD = atributoTres;
+        iDC = atributoCuatro;
     }
     public String getTitulo(Cancion c){        
         return c.titulo;
     }    
-    /*public String getIDD(Disco d){        
-        return d.iDD;
-    }*/
     public String getGenero(Cancion c){
         return c.genero;
     }
     public String getDuracion(Cancion c){        
         return c.duracion;
+    }
+    public String getIdc(Cancion c){        
+        return c.iDC;
     }
 }
 
