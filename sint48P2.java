@@ -51,7 +51,7 @@ public class Sint48P2 extends HttpServlet {
         //public static ArrayList<String>fichErroneos = new ArrayList<String>();
         public static ArrayList<String>listaErrores= new ArrayList<String>();
         public static ArrayList<String>listaEFatales = new ArrayList<String>();
-        public static  ArrayList<String>listaWarnings = new ArrayList<String>();               
+        public static ArrayList<String>listaWarnings = new ArrayList<String>();               
         
     public void init(ServletConfig config) throws ServletException
     {        
@@ -173,7 +173,7 @@ public class Sint48P2 extends HttpServlet {
 		switch(fase)
         	{                        
             	case "01": doGetFase01(out,auto,res); break;
-            	case "02": doGetFase02(out,auto,listaWarnings,listaErrores,listaEFatales,res); break;
+            	case "02": doGetFase02(out,auto,res); break;
             	case "11": doGetFase11(out,auto,res); break;
             	case "12": doGetFase12(out,auto,res,anio); break;
             	case "13": doGetFase13(out,auto,res,anio,idd); break;
@@ -228,25 +228,25 @@ public class Sint48P2 extends HttpServlet {
         out.println("<status>OK</status>");
         out.println("</service>");
     }
-    public void doGetFase02(PrintWriter out, String auto, ArrayList<String> listaWarnings, ArrayList<String> listaErrores, ArrayList<String> listaEFatales, HttpServletResponse res)throws IOException
+    public void doGetFase02(PrintWriter out, String auto, HttpServletResponse res)throws IOException
     {
         if(auto==null)
         {
-            doHtmlF02(out, listaWarnings,listaErrores, listaEFatales);                
+            doHtmlF02(out);                
         }
         else if(auto.equals("si"))
         {
-            doXmlF02(res, listaWarnings, listaErrores, listaEFatales);
+            doXmlF02(res);
         }         
     }//doGetFase02
-    public void doHtmlF02(PrintWriter out,ArrayList<String> listaWarnings, ArrayList<String> listaErrores, ArrayList<String> listaEFatales)
+    public void doHtmlF02(PrintWriter out)
     {
 	//int warn = warns.size();
 	//int err = errores.size();
     //int fErr = fatalErr.size();
-    int numError = listaEFatales.size();
-    int numEFatal = listaErrores.size();
-    int numWarning = listaWarnings.size();
+    int numError = listaErrores.size();
+    int numEFatal = listaEFatales.size();
+    int numWarning = listaWarnings.size();    
 
     out.println("<html>");
     out.println("<head>");
@@ -258,29 +258,29 @@ public class Sint48P2 extends HttpServlet {
     out.println("<h1>Servicio de consulta de canciones</h1>");
 	//Ficheros con warnings
     out.println("<h2>Se han encontrado "+numWarning+" ficheros con warnings.</h2>");
-    if(numWarning>0)
-    {
+    //if(numWarning!=0)
+    //{
         for (int i=0;i<numWarning;i++)
 	    {
 	        out.println("<p>"+listaWarnings.get(i)+"</p>");
 	    }
-    }	
+    //}	
     out.println("<h2>Se han encontrado "+numError+" ficheros con errores</h2>");
-    if(numError>0)
-    {
+    //if(numError!=0)
+    //{
         for (int i=0;i<listaErrores.size();i++)
 	    {
 	        out.println("<p>"+listaErrores.get(i)+"</p>");
         }
-    }	              
+    //}	              
     out.println("<h2>Se han encontrado "+numEFatal+" ficheros con errores fatales</h2>");
-    if(numEFatal>0)
-    {
+    //if(numEFatal!=0)
+    //{
         for (int i=0;i<numEFatal;i++)
 	    {
 	        out.println("<p>"+listaEFatales.get(i)+"</p>");
 	    } 
-    }	              
+    //}	              
     out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atras</button>");
     out.println("</body>");
     out.println("<footer>");
@@ -288,7 +288,7 @@ public class Sint48P2 extends HttpServlet {
     out.println("</footer>");
     out.println("</html>");
     }//doHtmlF02
-    public void doXmlF02(HttpServletResponse res,ArrayList<String> listaWarnings, ArrayList<String> listaErrores, ArrayList<String> listaEFatales)throws IOException
+    public void doXmlF02(HttpServletResponse res)throws IOException
     {    
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();
@@ -397,11 +397,17 @@ public static ArrayList<Disco> getC1Discos (String anio) //Type Disco
         }
     }
     Element raiz = res.getDocumentElement(); //Obtencion del elemento Songs
-    NodeList discos = raiz.getElementsByTagName("Disco");      
+    NodeList pais = raiz.getElementsByTagName("Pais");
+    NodeList discos = raiz.getElementsByTagName("Disco");          
     for(int i = 0;i<discos.getLength();i++) //El acceso al texto de IML produce redirecciones a nuevos documentos
         {
             Node itemDisco = discos.item(i);
             atributoTres=itemDisco.getAttributes().getNamedItem("idd").getTextContent();
+            atributoCuatro=itemDisco.getAttributes().getNamedItem("langs").getNodeValue();
+            //String[] parts = atributos.split(" ");
+            //atributoTres = parts[0];
+            //atributoCuatro = parts[1];
+            //atributoTres=itemDisco.getAttributes().getNamedItem("idd").getTextContent();            
             //atributoCuatro=itemDisco.getAttributes().getNamedItem("langs").getTextContent();
             /*if(atributoCuatro.equals(null))
             {
