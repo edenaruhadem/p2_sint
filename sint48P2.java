@@ -389,7 +389,8 @@ public static ArrayList<Disco> getC1Discos (String anio) //Type Disco
     String atributoUno = null;
     String atributoDos = null;
     String atributoTres = null;
-    String atributoCuatro = null;    
+    String atributoCuatro = null;
+    String idiomaPais = null;    
     for (String key:mapDocs.keySet()){
         if(anio.equals(key))
         {
@@ -398,36 +399,44 @@ public static ArrayList<Disco> getC1Discos (String anio) //Type Disco
     }
     Element raiz = res.getDocumentElement(); //Obtencion del elemento Songs
     NodeList pais = raiz.getElementsByTagName("Pais");
-    NodeList discos = raiz.getElementsByTagName("Disco");          
-    for(int i = 0;i<discos.getLength();i++) //El acceso al texto de IML produce redirecciones a nuevos documentos
-        {
-            Node itemDisco = discos.item(i);
-            atributoTres=itemDisco.getAttributes().getNamedItem("idd").getTextContent();
-            atributoCuatro=itemDisco.getAttributes().getNamedItem("langs").getNodeValue();
-            //String[] parts = atributos.split(" ");
-            //atributoTres = parts[0];
-            //atributoCuatro = parts[1];
-            //atributoTres=itemDisco.getAttributes().getNamedItem("idd").getTextContent();            
-            //atributoCuatro=itemDisco.getAttributes().getNamedItem("langs").getTextContent();
-            /*if(atributoCuatro.equals(null))
+    NodeList discos = raiz.getElementsByTagName("Disco");
+    for(int i = 0; i<pais.getLength();i++)
+    {
+        Node itemPais = pais.item(i);       
+        idiomaPais = itemPais.getAttributes().getNamedItem("lang").getTextContent();          
+        for(int j = 0;j<discos.getLength();j++) //El acceso al texto de IML produce redirecciones a nuevos documentos
+        {            
+            Node itemDisco = discos.item(j);
+            Node parentDisco = itemDisco.getParentNode();
+            if(parentDisco.equals(itemPais))
             {
-
-            }*/                                              
+                NamedNodeMap atributosDisco = itemDisco.getAttributes();
+            if(atributosDisco.getLength()>1)
+            {
+                atributoTres=atributosDisco.getNamedItem("idd").getTextContent();
+                atributoCuatro=atributosDisco.getNamedItem("langs").getTextContent();
+            }
+            else{
+                atributoTres=atributosDisco.getNamedItem("idd").getTextContent();
+                atributoCuatro=idiomaPais;
+            }                                                         
             NodeList itemDiscoChild = itemDisco.getChildNodes();         
 
-            for(int j = 0;j<itemDiscoChild.getLength(); j++)
+            for(int k = 0;k<itemDiscoChild.getLength(); k++)
             {
-                if(itemDiscoChild.item(j).getNodeName().equals("Titulo"))
+                if(itemDiscoChild.item(k).getNodeName().equals("Titulo"))
                 {
-                    atributoUno = itemDiscoChild.item(j).getTextContent();
+                    atributoUno = itemDiscoChild.item(k).getTextContent();
                 }
-                if(itemDiscoChild.item(j).getNodeName().equals("Interprete"))
+                if(itemDiscoChild.item(k).getNodeName().equals("Interprete"))
                 {
-                    atributoDos = itemDiscoChild.item(j).getTextContent();
+                    atributoDos = itemDiscoChild.item(k).getTextContent();
                 }                
             }
-            listaDiscos.add(new Disco(atributoUno,atributoDos,atributoTres, atributoCuatro));                     
-        }
+            listaDiscos.add(new Disco(atributoUno,atributoDos,atributoTres, atributoCuatro));           
+            }                                 
+        }              
+    }
     return listaDiscos;
 }
 public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type Cancion
@@ -536,7 +545,7 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                         flag = true;                        
                     }
                 }
-                else if(flag)
+                if(flag)
                 {
                     /*if(childDiscos.item(j).getNodeName().equals("Premios"))
                     {
@@ -558,8 +567,11 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                         Node itemcancion = childDiscos.item(j);
                         atributoCuatro=itemcancion.getAttributes().getNamedItem("idc").getTextContent();
                         NodeList childCancion = itemcancion.getChildNodes();
+                        
                         for(int k = 0;k<childCancion.getLength(); k++)
                         {
+                            //Node firstchilcancion = childCancion.item(k).getFirstChild();                            
+                            atributoCinco = childCancion.item(k).getNodeName();                                                       
                             if(childCancion.item(k).getNodeName().equals("Titulo"))
                             {
                                 atributoUno = childCancion.item(k).getTextContent();
@@ -572,26 +584,33 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                             {
                                 atributoTres = childCancion.item(k).getTextContent();
                             }
-                            if(childCancion.item(k).getNodeName().equals("#text"))
+                            if(childCancion.item(k).getNodeName().equals("#text"))  
                             {
-                                atributoCinco = childCancion.item(k).getNodeValue();
-                            }                 
+                                atributoCinco = childCancion.item(k).getNodeValue();                               
+                            }
+                                                                          
                         }
                         listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco));                       
-                    }
+                    }                    
                 }
             }
             flag = false;
-        }       
+        }               
     }
-    //Recorre listares y obtener las duraciones comparando cada una con la elegida. Si es menor, meterlo en ña ñista resultado
+    //Recorre listares y obtener las duraciones comparando cada una con la elegida. Si es menor, meterlo en la lista resultado
     for (int i = 0;i<listares.size();i++)
     {
         Cancion obj = listares.get(i);
         int durobj = Integer.parseInt(obj.getDuracion(obj));
         if(durobj < Integer.parseInt(dur))
         {
-            Resultado.add(obj);
+            //Resultado.add(obj); Forma rápida inicial
+            atributoUno = obj.getTitulo(obj);
+            atributoDos = obj.getGenero(obj);
+            atributoTres = obj.getDuracion(obj);
+            atributoCuatro = obj.getIdc(obj);
+            atributoCinco = obj.getDescripcion(obj);
+            Resultado.add(new Cancion(atributoUno, atributoDos, atributoTres, atributoCuatro, atributoCinco));
         }
     }
     return Resultado;        
@@ -776,7 +795,7 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
             }
             else
             {*/
-            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"'</p>");  
+            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"' --- IDC = '"+obj.getIdc(obj)+"'</p>");  
             //}           
         }        
         out.println("</form>");

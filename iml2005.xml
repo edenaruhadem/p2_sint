@@ -97,11 +97,11 @@
                 <Duracion>300</Duracion>
                 <Genero>Rock</Genero>
             </Cancion>
-            <Cancion idc="2001-002-002-03">
-            Tercera del ¿Cuándo se come aquí?
+            <Cancion idc="2001-002-002-03">            
                 <Titulo>El cobrador loco</Titulo>
                 <Duracion>210</Duracion>
                 <Genero>Rock</Genero>
+            Tercera del ¿Cuándo se come aquí?
             </Cancion>
         </Disco>
     </Pais>
