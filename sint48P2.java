@@ -446,7 +446,8 @@ public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type
     String atributoTres = null;
     String atributoCuatro = null;
     String atributoCinco = null;
-    ArrayList<String> atributoSeis = new ArrayList<String>();
+    String atributoSeis = "";
+    //ArrayList<String> atributoSeis = new ArrayList<String>();
     //String atributoCinco[] = {""};
     for (String key:mapDocs.keySet()){
         if(anio.equals(key))
@@ -495,9 +496,8 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
     String atributoTres = null;
     String atributoCuatro = null;
     String atributoCinco = null;
-    ArrayList<String> atributoSeis = new ArrayList<String>();
-    //ArrayList<String> atributoCinco = new ArrayList<String>();
-    //String atributoCinco[] = {""};
+    String atributoSeis = "";
+    //ArrayList<String> atributoSeis = new ArrayList<String>();    
     Document res = null;
     Boolean flag = false;
     ArrayList<Cancion> listares = new ArrayList<Cancion>();    
@@ -529,14 +529,77 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
             NodeList childDiscos = itemDisco.getChildNodes();            
             for (int j=0;j<childDiscos.getLength();j++)
             {
-                if(childDiscos.item(j).getNodeName().equals("Interprete"))
+                /*if(childDiscos.item(j).getNodeName().equals("Premios"))
                 {
-                    //NodeList sibInterprete = childDiscos.item(j).getNextSibling();
+                    Node premiosDiscos = childDiscos.item(j);
+                    NodeList hijosPremios = premiosDiscos.getChildNodes();
+                    for (int m = 0;m<hijosPremios.getLength();m++)
+                    {
+                        Node premio = hijosPremios.item(m);
+                        if((premio.getNodeName().equals("Premio")) && (m==0))
+                        {
+                            atributoSeis = premio.getTextContent();
+                        }
+                        else if((premio.getNodeName().equals("Premio")) && (m!=0))
+                        {
+                            atributoSeis = atributoSeis+" "+premio.getTextContent();
+                        }
+                    }
+                }*/               
+                if(childDiscos.item(j).getNodeName().equals("Interprete"))
+                {                   
                     String nameInt = childDiscos.item(j).getTextContent();
                     if(nameInt.equals(interprete))
                     {
                         flag = true;                        
                     }
+                    if(flag)
+                    {
+                        Node parentInterprete = childDiscos.item(j).getParentNode();
+                        NodeList hijosDisco = parentInterprete.getChildNodes();
+                        for (int x = 0; x<hijosDisco.getLength();x++)
+                        {
+                            Node hijoPremios = hijosDisco.item(x);
+                            if(hijoPremios.getNodeName().equals("Premios"))
+                            {                            
+                                NodeList hayPremios = hijoPremios.getChildNodes();
+                                for (int m = 0;m<hayPremios.getLength();m++)
+                                {
+                                    Node premio = hayPremios.item(m);
+                                    if((premio.getNodeName().equals("Premio")) && (m==0))
+                                    {
+                                        atributoSeis = premio.getTextContent();
+                                        //atributoSeis = "blank";
+                                    }
+                                    else if((premio.getNodeName().equals("Premio")) && (m!=0))
+                                    {
+                                        atributoSeis = atributoSeis+" "+premio.getTextContent();
+                                        //atributoSeis = "blank";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    /*if(sibInterprete.getNodeName().equals("Premios"))
+                    {
+                        //Node premiosDiscos = childDiscos.item(j);
+                        NodeList hijosPremios = sibInterprete.getChildNodes();
+                        for (int m = 0;m<hijosPremios.getLength();m++)
+                        {
+                            Node premio = hijosPremios.item(m);
+                            if((premio.getNodeName().equals("Premio")) && (m==0))
+                            {
+                                //atributoSeis = premio.getTextContent();
+                                atributoSeis = "blank";
+                            }
+                            else if((premio.getNodeName().equals("Premio")) && (m!=0))
+                            {
+                                //atributoSeis = atributoSeis+" "+premio.getTextContent();
+                                atributoSeis = "blank";
+                            }
+                        }
+                    }
+                    else  atributoSeis = "blank";*/                     
                 }
                 if(childDiscos.item(j).getNodeName().equals("Cancion") && flag)
                 {
@@ -547,37 +610,29 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                     NodeList childCancion = itemcancion.getChildNodes();                        
                     for(int k = 0;k<childCancion.getLength(); k++)
                     {
-                        Node getParent = childCancion.item(k).getParentNode();
-                        Node getParentCancion = getParent.getParentNode(); //Esto será DISCOS
-                        NodeList hijosDiscos = getParentCancion.getChildNodes();
-                        for (int r=0;r<hijosDiscos.getLength();r++)
-                        {
-                            Node itemhijoDisco = hijosDiscos.item(r);
-                            if(itemhijoDisco.getNodeName().equals("Premios"))
-                            {
-                                NodeList hijosPremios = itemhijoDisco.getChildNodes();
-                                for(int m=0; m<hijosPremios.getLength();m++)
+                        Node getParent = childCancion.item(k).getParentNode(); //Esto es cancion
+                        //Node getParentCancion = getParent.getParentNode(); //Esto será DISCOS
+                        //NodeList hijosDiscos = getParentCancion.getChildNodes();
+                        //for (int r=0;r<hijosDiscos.getLength();r++)
+                        //{
+                            //Node itemhijoDisco = hijosDiscos.item(r);
+                            //if(itemhijoDisco.getNodeName().equals("Premios"))
+                            //{
+                                /*NodeList hijosPremios = itemhijoDisco.getChildNodes();
+                                for (int m = 0;m<hijosPremios.getLength();m++)
                                 {
                                     Node premio = hijosPremios.item(m);
-                                    if(premio.getNodeName().equals("Premio"))
+                                    if((premio.getNodeName().equals("Premio")) && (m==0))
                                     {
-                                        atributoSeis.add(premio.getTextContent());
+                                        atributoSeis = premio.getTextContent();
                                     }
-                                }
-                            }
-                        }
-                        //Node getSiblingInterprete = getSiblingCancion.getPreviousSibling(); //Esto serám los premios si existe
-                        /*if(getSiblingInterprete.getNodeName().equals("Premios"))
-                        {
-                            NodeList premios = getSiblingInterprete.getChildNodes();                            
-                            for(int r = 0;r<premios.getLength();r++)
-                            {
-                                if(premios.item(r).getNodeName().equals("Premio"))
-                                {
-                                    atributoSeis.add(premios.item(r).getTextContent());
-                                }                                
-                            }
-                        }*/
+                                    else if((premio.getNodeName().equals("Premio")) && (m!=0))
+                                    {
+                                        atributoSeis = atributoSeis+" "+premio.getTextContent();
+                                    }
+                                }*/                                                               
+                            //}
+                        //}
                         if(getParent.equals(itemcancion))
                         {
                             if(childCancion.item(k).getNodeName().equals("Titulo"))
@@ -782,7 +837,7 @@ public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> lis
     }
 public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
 {
-        ArrayList<String> premios = new ArrayList<String>();
+        //String premios[] = {""};
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
@@ -797,15 +852,15 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         for(int i=0;i<Resultado.size();i++)
         {
             Cancion obj = Resultado.get(i);
-            premios = obj.getPremios(obj);
-            if(premios.isEmpty())
-            {
-                out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion ='"+obj.getDescripcion(obj)+"'</p>");
-            }
-            else
-            {
-            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"' --- Premios = '"+premios.get(i)+"'</p>");  
-            }           
+            //premios = obj.getPremios(obj);
+            //if(premios.length == 0)
+            //{
+                //out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion ='"+obj.getDescripcion(obj)+"'</p>");
+            //}
+            //else
+            //{
+            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");  
+            //}           
         }        
         out.println("</form>");
         out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
@@ -943,9 +998,9 @@ class Cancion {
     private String genero = ""; 
     private String duracion = "";
     private String desc = "";
-    private ArrayList<String> premios = new ArrayList<String>();
+    private String premios = "";
 
-    public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro, String atributoCinco, ArrayList<String> atributoSeis) 
+    public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro, String atributoCinco, String atributoSeis) 
     {
         titulo = atributoUno;
         genero = atributoDos;
@@ -974,7 +1029,7 @@ class Cancion {
     public String getDescripcion(Cancion c){        
         return c.desc;
     }
-    public ArrayList<String> getPremios(Cancion c){      
+    public String getPremios(Cancion c){      
         return c.premios;
     }
 }
