@@ -364,8 +364,24 @@ public class Sint48P2 extends HttpServlet {
         
     }//doGetFase12
     public void doGetFase13(PrintWriter out, String auto,HttpServletResponse res, String anio, String idd)throws IOException
-    {        
+    {
+        ArrayList<Integer> dur = new ArrayList<Integer>();        
         listaCanciones = getC1Canciones(anio, idd);
+        for(int i=0;i<listaCanciones.size();i++)
+        {
+            dur.add(Integer.parseInt(listaCanciones.get(i).duracion)); 
+        }
+        Collections.sort(dur);
+        //Ordenar lista discos
+        //listaDiscos = getOrder(listaDiscos);
+        for(int j = 0;j<listaCanciones.size();j++)
+        {
+            Cancion obj = listaCanciones.get(j);
+            String dura = obj.duracion;
+            int indice = dur.indexOf(Integer.parseInt(dura));
+            listaCanciones.remove(obj);
+            listaCanciones.add(indice, obj);
+        }
         if(auto==null)
         {
             doHtmlF13(out,anio, idd, listaCanciones);                
@@ -978,7 +994,7 @@ class Cancion {
     private String titulo = "";
 	private String iDC = "";
     private String genero = ""; 
-    private String duracion = "";
+    public String duracion = "";
     private String desc = "";
     private String premios = "";
 
