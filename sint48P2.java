@@ -149,7 +149,7 @@ public class Sint48P2 extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
     {
-        res.setContentType("text/html ; charset=utf-8");
+        res.setContentType("text/html ; charset=UTF-8");
         PrintWriter out = res.getWriter();
 	    String p = req.getParameter("p");
         String fase = req.getParameter("pfase");
@@ -195,7 +195,7 @@ public class Sint48P2 extends HttpServlet {
     {
         out.println("<html>");
         out.println("<head>");
-        out.println("<meta charset=utf-8'></meta>");
+        out.println("<meta charset=UTF-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");    
         out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>"); //href='iml.css' en el lab
         out.println("</head>");
@@ -709,9 +709,9 @@ public void doHtmlF11(PrintWriter out, ArrayList<String> Anios)
         {
             if(i==0)
             {
-                out.println("<p><input type = 'radio' name = 'panio' value = "+Anios.get(i)+" checked>"+Integer.toString(i+1)+".-"+Anios.get(i)+"</input></p>");
+                out.println("<p><input type = 'radio' name = 'panio' value = "+Anios.get(i)+" checked>"+Integer.toString(i+1)+".- "+Anios.get(i)+"</input></p>");
             }
-            else out.println("<p><input type = 'radio' name = 'panio' value = "+Anios.get(i)+">"+Integer.toString(i+1)+".-"+Anios.get(i)+"</input></p>");            
+            else out.println("<p><input type = 'radio' name = 'panio' value = "+Anios.get(i)+">"+Integer.toString(i+1)+".- "+Anios.get(i)+"</input></p>");            
         }        
         //out.println("</ol>");
         out.println("<br></br>");        
@@ -752,14 +752,16 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList<Disco> listaDiscos
         out.println("<form name = 'miformfase12'>");
 	    out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");
         out.println("<input type = 'hidden' name = 'pfase' value = '13'></input>");	
-        out.println("<input type = 'hidden' name = 'panio' value ='"+anio+"'></input>");
-        out.println("<ol>");
+        out.println("<input type = 'hidden' name = 'panio' value ='"+anio+"'></input>");        
         for(int i=0;i<listaDiscos.size();i++)
         {
-        Disco d = listaDiscos.get(i);            
-        out.println("<li><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+">- Titulo ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Interprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></li>");        
-        }        
-        out.println("</ol>");
+            Disco d = listaDiscos.get(i);
+            if(i==0)
+            {
+                out.println("<p><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+" checked>"+Integer.toString(i+1)+".-"+" Titulo ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Interprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></p>");
+            }
+            else out.println("<p><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+">"+Integer.toString(i+1)+".-"+" Titulo ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Interprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></p>");        
+        }       
         out.println("<br></br>");    
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
         out.println("</form>");
@@ -808,14 +810,16 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancio
 	    out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");
         out.println("<input type = 'hidden' name = 'pfase' value = '14'></input>");	
         out.println("<input type = 'hidden' name = 'panio' value = '"+anio+"'></input>");
-        out.println("<input type = 'hidden' name = 'pidd' value = '"+idd+"'></input>");
-        out.println("<ol>");
+        out.println("<input type = 'hidden' name = 'pidd' value = '"+idd+"'></input>");        
         for(int i=0;i<listaCanciones.size();i++)
         {
-        Cancion c = listaCanciones.get(i);
-        out.println("<li><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+">- Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+" seg.'</input></li>");        
-        }        
-        out.println("</ol>");
+            Cancion c = listaCanciones.get(i);
+            if(i==0)
+            {
+                out.println("<p><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+" checked>"+Integer.toString(i+1)+".-"+" Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+" seg.'</input></p>");
+            }
+            else out.println("<p><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+">"+Integer.toString(i+1)+".-"+" Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+" seg.'</input></p>");        
+        }       
         out.println("<br></br>");    
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
         out.println("</form>");
@@ -866,16 +870,8 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         out.println("<h3>Este es el resultado:</h3>");
         for(int i=0;i<Resultado.size();i++)
         {
-            Cancion obj = Resultado.get(i);
-            //premios = obj.getPremios(obj);
-            //if(premios.length == 0)
-            //{
-                //out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion ='"+obj.getDescripcion(obj)+"'</p>");
-            //}
-            //else
-            //{
-            out.println("<p>- Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");  
-            //}           
+            Cancion obj = Resultado.get(i);           
+            out.println("<p>"+Integer.toString(i+1)+".-"+" Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");        
         }        
         out.println("</form>");
         out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
