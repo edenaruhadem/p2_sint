@@ -207,6 +207,7 @@ public class Sint48P2 extends HttpServlet {
         PrintWriter out = res.getWriter();                
         out.println("<html>");
         out.println("<head>");
+        //out.println("<meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>");
         //out.println("<meta charset='utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");    
         out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>"); //href='iml.css' en el lab
@@ -254,7 +255,8 @@ public class Sint48P2 extends HttpServlet {
 	//int warn = warns.size();
 	//int err = errores.size();
     //int fErr = fatalErr.size();
-    res.setContentType("text/html; charset=utf-8");                      
+    //res.setContentType("text/html; charset=utf-8");
+    res.setContentType("text/html");                       
     PrintWriter out = res.getWriter();
     int numError = listaErrores.size();
     int numEFatal = listaEFatales.size();
