@@ -41,14 +41,11 @@ public class Sint48P2 extends HttpServlet {
     	public static String url;
 
 	    //Declaración de estructuras de datos
-	    public static HashMap<String,Document> mapDocs = new HashMap<String,Document>(); //ficheros correctos. key = anio, value = document
-	    //HashSet<Document> correctos = new HashSet<Document>();
-	
-	
-        public static ArrayList<String>Anios = new ArrayList<String>();
-        public static ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
-        public static ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
-        public static ArrayList<Cancion>Resultado = new ArrayList<Cancion>();
+	    public static HashMap<String,Document> mapDocs = new HashMap<String,Document>();	
+        public  ArrayList<String>Anios = new ArrayList<String>();
+        public  ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
+        public  ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
+        public  ArrayList<Cancion>Resultado = new ArrayList<Cancion>();
         //public static ArrayList<String>fichErroneos = new ArrayList<String>();
         public static ArrayList<String>listaErrores= new ArrayList<String>();
         public static ArrayList<String>listaEFatales = new ArrayList<String>();
@@ -298,7 +295,7 @@ public class Sint48P2 extends HttpServlet {
         for(int i=0;i<listaWarnings.size();i++)
         {
         out.println("<warning>");        
-        out.println("<file>URL del fichero que provoca el warning"+listaWarnings.get(i)+"</file>");
+        out.println("<file>URL del fichero que provoca el warning '"+listaWarnings.get(i)+"'</file>");
         out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
         out.println("</warning>");
         }   
@@ -307,7 +304,7 @@ public class Sint48P2 extends HttpServlet {
         for(int i=0;i<listaErrores.size();i++)
         {
         out.println("<error>");
-        out.println("<file>URL del fichero que provoca el error"+listaErrores.get(i)+"</file>");
+        out.println("<file>URL del fichero que provoca el error '"+listaErrores.get(i)+"'</file>");
         out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
         out.println("</error>");
         }        
@@ -316,7 +313,7 @@ public class Sint48P2 extends HttpServlet {
         for(int i =0;i<listaEFatales.size();i++)
         {
         out.println("<fatalerror>");
-        out.println("<file>URL del fichero que provoca el fatal error"+listaEFatales.get(i)+"</file>");
+        out.println("<file>URL del fichero que provoca el fatal error '"+listaEFatales.get(i)+"'</file>");
         out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
         out.println("</fatalerror>");
         }      
@@ -324,7 +321,8 @@ public class Sint48P2 extends HttpServlet {
         out.println("</errores>");
     }
     public void doGetFase11(PrintWriter out, String auto,HttpServletResponse res)throws IOException
-    {        
+    {
+        Anios.clear();        
         Anios = getC1Anios(); //Anios es un array list <string>
         Collections.sort(Anios);
         if(auto==null)
@@ -338,6 +336,7 @@ public class Sint48P2 extends HttpServlet {
     }//doGetFase11
     public void doGetFase12(PrintWriter out, String auto, HttpServletResponse res, String anio)throws IOException
     {
+        listaDiscos.clear();
         ArrayList<String> interpretes = new ArrayList<String>();                
         listaDiscos = getC1Discos(anio);
         for(int i=0;i<listaDiscos.size();i++)
@@ -367,6 +366,7 @@ public class Sint48P2 extends HttpServlet {
     }//doGetFase12
     public void doGetFase13(PrintWriter out, String auto,HttpServletResponse res, String anio, String idd)throws IOException
     {
+        listaCanciones.clear();
         ArrayList<Integer> dur = new ArrayList<Integer>();        
         listaCanciones = getC1Canciones(anio, idd);
         for(int i=0;i<listaCanciones.size();i++)
@@ -396,6 +396,7 @@ public class Sint48P2 extends HttpServlet {
     }//doGetFase13
     public void doGetFase14(PrintWriter out, String auto, HttpServletResponse res, String anio, String idd, String idc)throws IOException
     {   
+        Resultado.clear();
         ArrayList<String> titulos = new ArrayList<String>();      
         Resultado = getC1Resultado(anio, idd, idc);
         for(int i=0;i<Resultado.size();i++)
@@ -425,7 +426,7 @@ public class Sint48P2 extends HttpServlet {
         
     }//doGetFase14     
     
-public static ArrayList<String> getC1Anios()
+public ArrayList<String> getC1Anios()
 {	
 	for(String key:mapDocs.keySet()){
         Anios.add(key);
@@ -433,7 +434,7 @@ public static ArrayList<String> getC1Anios()
 	return Anios;    
 }
 
-public static ArrayList<Disco> getC1Discos (String anio) //Type Disco
+public ArrayList<Disco> getC1Discos (String anio) //Type Disco
 {
     Document res = null;
     String atributoUno = null;
@@ -491,7 +492,7 @@ public static ArrayList<Disco> getC1Discos (String anio) //Type Disco
     }
     return listaDiscos;
 }
-public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type Cancion
+public ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type Cancion
 {
     Document res = null;
     String atributoUno = null;
@@ -538,7 +539,7 @@ public static ArrayList<Cancion> getC1Canciones (String anio, String idd) //Type
     }
     return listaCanciones;
 }
-public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc) //Todas las canciones de un interprete que duren menos que una elegida
+public ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc) //Todas las canciones de un interprete que duren menos que una elegida
 {
     String dur = null;
     String interprete = null;
@@ -788,7 +789,7 @@ public void doXmlF12(HttpServletResponse res, String anio, ArrayList<Disco> list
                 for(int i=0;i<listaDiscos.size();i++)
                 {
                 Disco d = listaDiscos.get(i);                       
-                    out.println("<disco idd="+d.getIDD(d)+" interprete="+d.getInterprete(d)+" langs="+d.getIdiomas(d)+">"+d.getTitulo(d)+"</disco>");
+                    out.println("<disco idd='"+d.getIDD(d)+"' interprete='"+d.getInterprete(d)+"' langs='"+d.getIdiomas(d)+"'>"+d.getTitulo(d)+"</disco>");
                 }
                 out.println("</discos>");                            
             }
@@ -847,7 +848,7 @@ public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> lis
                 for(int i=0;i<listaCanciones.size();i++)
                 {
                 Cancion c = listaCanciones.get(i);
-                out.println("<cancion idc="+c.getIdc(c)+" genero="+c.getGenero(c)+" duracion="+c.getDuracion(c)+">"+c.getTitulo(c)+"</cancion>");
+                out.println("<cancion idc='"+c.getIdc(c)+"' genero='"+c.getGenero(c)+"' duracion='"+c.getDuracion(c)+"'>"+c.getTitulo(c)+"</cancion>");
                 }
                 out.println("</canciones>");                                         
             }
@@ -897,7 +898,7 @@ public void doXmlF14(HttpServletResponse res,String idc, ArrayList<Cancion> Resu
                 for(int i=0;i<Resultado.size();i++)
                 {
                 Cancion obj = Resultado.get(i);
-                out.println("<cancion decripcion="+obj.getDescripcion(obj)+" premios="+obj.getPremios(obj)+">"+obj.getTitulo(obj)+"</cancion>");
+                out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
                 }
                 out.println("</canciones>");                                                       
             }        
