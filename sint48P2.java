@@ -49,7 +49,11 @@ public class Sint48P2 extends HttpServlet {
         //public static ArrayList<String>fichErroneos = new ArrayList<String>();
         public static ArrayList<String>listaErrores= new ArrayList<String>();
         public static ArrayList<String>listaEFatales = new ArrayList<String>();
-        public static ArrayList<String>listaWarnings = new ArrayList<String>();               
+        public static ArrayList<String>listaWarnings = new ArrayList<String>();
+        public static ArrayList<String>urlErrores= new ArrayList<String>();
+        public static ArrayList<String>urlEFatales = new ArrayList<String>();
+        public static ArrayList<String>urlWarnings = new ArrayList<String>();
+
         
     public void init(ServletConfig config) throws ServletException
     {        
@@ -67,7 +71,7 @@ public class Sint48P2 extends HttpServlet {
 	//Estructura dinámica de todos los archivos obtenidos al leer uno (mediante los tags IML)
         LinkedList<String> listaFicheros = new LinkedList<String>();        
         //Estructura dinámica para no repetir archivos 
-        HashSet<String> leidos = new HashSet<String>();        
+        ArrayList<String> leidos = new ArrayList<String>();    //Era HashSet            
 	    String strAnios = null;
         //HashSet<String> anios_hash = new HashSet<String>();
 	//-------------Objeto clase document builder dbf(conjunto de parsers)------------------
@@ -112,16 +116,20 @@ public class Sint48P2 extends HttpServlet {
                     {
                         //System.out.print("Hay warning");
                         listaWarnings.add(error.getWarning());  //Hay que añadir tipos error
+                        urlWarnings.add(leidos.get(leidos.size()-1));
+
                     }
                     if(!error.getErrores().equals(""))
                     {
                         //System.out.print("Hay errores");
                         listaErrores.add(error.getErrores());
+                        urlErrores.add(leidos.get(leidos.size()-1));
                     }
                     if(!error.getFatalError().equals(""))
                     {
                         //System.out.print("Hay errores fatales");
                         listaEFatales.add(error.getFatalError());
+                        urlEFatales.add(leidos.get(leidos.size()-1));
                     }
                 }//if hasError()
                 else
@@ -146,10 +154,12 @@ public class Sint48P2 extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
     {
-        //res.setContentType("text/html;charset=utf-8");
-        res.setCharacterEncoding("UTF-8");
-        res.setContentType("text/html");                
-        PrintWriter out = res.getWriter();
+        //res.setContentType("text/html; charset=utf-8");
+        //res.setCharacterEncoding("UTF-8");
+        //res.setContentType("text/html");                
+        //PrintWriter out = res.getWriter();
+        res.setContentType("text/html;charset=utf-8"); 
+		req.setCharacterEncoding("UTF8");
 
 	    String p = req.getParameter("p");
         String fase = req.getParameter("pfase");
@@ -170,32 +180,34 @@ public class Sint48P2 extends HttpServlet {
 	{
 		switch(fase)
         	{                        
-            	case "01": doGetFase01(out,res,auto); break;
-            	case "02": doGetFase02(out,res,auto); break;
-            	case "11": doGetFase11(out,res,auto); break;
-            	case "12": doGetFase12(out,res,auto,anio); break;
-            	case "13": doGetFase13(out,res,auto,anio,idd); break;
-            	case "14": doGetFase14(out,res,auto,anio,idd,idc); break;
+            	case "01": doGetFase01(res,auto); break;
+            	case "02": doGetFase02(res,auto); break;
+            	case "11": doGetFase11(res,auto); break;
+            	case "12": doGetFase12(res,auto,anio); break;
+            	case "13": doGetFase13(res,auto,anio,idd); break;
+            	case "14": doGetFase14(res,auto,anio,idd,idc); break;
         	}
 
 	}        
     }//doGet              
-    public void doGetFase01(PrintWriter out,HttpServletResponse res, String auto)throws IOException
+    public void doGetFase01(HttpServletResponse res, String auto)throws IOException
     {
         if(auto==null)
         {
-            doHtmlF01(out);                
+            doHtmlF01(res);                
         }
         else if(auto.equals("si"))
         {
             doXmlF01(res);
         }                                  
     }//doHtmlF01
-    public void doHtmlF01(PrintWriter out)throws IOException
-    {                
+    public void doHtmlF01(HttpServletResponse res)throws IOException
+    {
+        res.setContentType("text/html; charset=utf-8");                      
+        PrintWriter out = res.getWriter();                
         out.println("<html>");
         out.println("<head>");
-        out.println("<meta charset='utf-8'></meta>");
+        //out.println("<meta charset='utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");    
         out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>"); //href='iml.css' en el lab
         out.println("</head>");
@@ -213,7 +225,7 @@ public class Sint48P2 extends HttpServlet {
         out.println("</form>");
         out.println("</body>");
         out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("<p>sint48. @Diego Ríos Castro.</p>");                
         out.println("</footer>");
         out.println("</html>");
     }//doHtmlF01
@@ -226,22 +238,24 @@ public class Sint48P2 extends HttpServlet {
         out.println("<status>OK</status>");
         out.println("</service>");
     }
-    public void doGetFase02(PrintWriter out,HttpServletResponse res, String auto)throws IOException
+    public void doGetFase02(HttpServletResponse res, String auto)throws IOException
     {
         if(auto==null)
         {
-            doHtmlF02(out);                
+            doHtmlF02(res);                
         }
         else if(auto.equals("si"))
         {
             doXmlF02(res);
         }         
     }//doGetFase02
-    public void doHtmlF02(PrintWriter out)
+    public void doHtmlF02(HttpServletResponse res)throws IOException
     {
 	//int warn = warns.size();
 	//int err = errores.size();
     //int fErr = fatalErr.size();
+    res.setContentType("text/html; charset=utf-8");                      
+    PrintWriter out = res.getWriter();
     int numError = listaErrores.size();
     int numEFatal = listaEFatales.size();
     int numWarning = listaWarnings.size();    
@@ -279,10 +293,10 @@ public class Sint48P2 extends HttpServlet {
 	        out.println("<p>"+listaEFatales.get(i)+"</p>");
 	    } 
     //}	              
-    out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atras</button>");
+    out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atrás</button>");
     out.println("</body>");
     out.println("<footer>");
-    out.println("<p>sint48. @Diego Rios Castro.</p>");                
+    out.println("<p>sint48. @Diego Ríos Castro.</p>");                
     out.println("</footer>");
     out.println("</html>");
     }//doHtmlF02
@@ -296,8 +310,8 @@ public class Sint48P2 extends HttpServlet {
         for(int i=0;i<listaWarnings.size();i++)
         {
         out.println("<warning>");        
-        out.println("<file>URL del fichero que provoca el warning '"+listaWarnings.get(i)+"'</file>");
-        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("<file>"+urlWarnings.get(i)+"</file>");
+        out.println("<cause>"+listaWarnings.get(i)+"</cause>");
         out.println("</warning>");
         }   
         out.println("</warnings>");
@@ -305,8 +319,8 @@ public class Sint48P2 extends HttpServlet {
         for(int i=0;i<listaErrores.size();i++)
         {
         out.println("<error>");
-        out.println("<file>URL del fichero que provoca el error '"+listaErrores.get(i)+"'</file>");
-        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("<file>"+urlErrores.get(i)+"</file>");
+        out.println("<cause>"+listaErrores.get(i)+"</cause>");
         out.println("</error>");
         }        
         out.println("</errors>");
@@ -314,29 +328,30 @@ public class Sint48P2 extends HttpServlet {
         for(int i =0;i<listaEFatales.size();i++)
         {
         out.println("<fatalerror>");
-        out.println("<file>URL del fichero que provoca el fatal error '"+listaEFatales.get(i)+"'</file>");
-        out.println("<cause>Explicación propia o proporcionada por el parser</cause>");
+        out.println("<file>"+urlEFatales.get(i)+"</file>");
+        out.println("<cause>"+listaEFatales.get(i)+"</cause>");
         out.println("</fatalerror>");
         }      
         out.println("</fatalerrors>");
         out.println("</errores>");
     }
-    public void doGetFase11(PrintWriter out,HttpServletResponse res, String auto)throws IOException
+    public void doGetFase11(HttpServletResponse res, String auto)throws IOException
     {
         Anios.clear();        
         Anios = getC1Anios(); //Anios es un array list <string>
         Collections.sort(Anios);
         if(auto==null)
         {
-            doHtmlF11(out,Anios);                
+            doHtmlF11(res,Anios);                
         }
         else if(auto.equals("si"))
         {
             doXmlF11(res,Anios);
         }        
     }//doGetFase11
-    public void doGetFase12(PrintWriter out,HttpServletResponse res, String auto, String anio)throws IOException
+    public void doGetFase12(HttpServletResponse res, String auto, String anio)throws IOException
     {
+        
         listaDiscos.clear();
         ArrayList<String> interpretes = new ArrayList<String>();                
         listaDiscos = getC1Discos(anio);
@@ -357,7 +372,7 @@ public class Sint48P2 extends HttpServlet {
         }
         if(auto==null)
         {
-             doHtmlF12(out,anio, listaDiscos);                
+             doHtmlF12(res,anio, listaDiscos);                
         }
         else if(auto.equals("si"))
         {
@@ -365,7 +380,7 @@ public class Sint48P2 extends HttpServlet {
         }       
         
     }//doGetFase12
-    public void doGetFase13(PrintWriter out,HttpServletResponse res, String auto, String anio, String idd)throws IOException
+    public void doGetFase13(HttpServletResponse res, String auto, String anio, String idd)throws IOException
     {
         listaCanciones.clear();
         ArrayList<Integer> dur = new ArrayList<Integer>();        
@@ -387,7 +402,7 @@ public class Sint48P2 extends HttpServlet {
         }
         if(auto==null)
         {
-            doHtmlF13(out,anio, idd, listaCanciones);                
+            doHtmlF13(res,anio, idd, listaCanciones);                
         }
         else if(auto.equals("si"))
         {
@@ -395,7 +410,7 @@ public class Sint48P2 extends HttpServlet {
         }       
         
     }//doGetFase13
-    public void doGetFase14(PrintWriter out,HttpServletResponse res, String auto, String anio, String idd, String idc)throws IOException
+    public void doGetFase14(HttpServletResponse res, String auto, String anio, String idd, String idc)throws IOException
     {   
         Resultado.clear();
         ArrayList<String> titulos = new ArrayList<String>();      
@@ -418,7 +433,7 @@ public class Sint48P2 extends HttpServlet {
         }        
         if(auto==null)
         {
-                doHtmlF14(out,anio, idd, idc, Resultado);                
+                doHtmlF14(res,anio, idd, idc, Resultado);                
         }
         else if(auto.equals("si"))
         {
@@ -690,8 +705,10 @@ public ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc) /
     }
     return Resultado;        
 }
-public void doHtmlF11(PrintWriter out, ArrayList<String> Anios)
+public void doHtmlF11(HttpServletResponse res, ArrayList<String> Anios)throws IOException
 {
+        res.setContentType("text/html; charset=utf-8");                      
+        PrintWriter out = res.getWriter();
         out.println("<html>");
         out.println("<head>");
         out.println("<meta charset='utf-8'></meta>");
@@ -718,10 +735,10 @@ public void doHtmlF11(PrintWriter out, ArrayList<String> Anios)
         out.println("<br></br>");        
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");            
         out.println("</form>");
-        out.println("<button type = 'button' class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atras</button> ");
+        out.println("<button type = 'button' class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atrás</button> ");
         out.println("</body>");
         out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("<p>sint48. @Diego Ríos Castro.</p>");                
         out.println("</footer>");
         out.println("</html>");
 }
@@ -738,8 +755,10 @@ public void doXmlF11(HttpServletResponse res,ArrayList<String> Anios)throws IOEx
         out.println("</anios>");
 }
 
-public void doHtmlF12(PrintWriter out, String anio, ArrayList<Disco> listaDiscos)
+public void doHtmlF12(HttpServletResponse res, String anio, ArrayList<Disco> listaDiscos)throws IOException
 {
+        res.setContentType("text/html; charset=utf-8");                      
+        PrintWriter out = res.getWriter();
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
@@ -759,19 +778,19 @@ public void doHtmlF12(PrintWriter out, String anio, ArrayList<Disco> listaDiscos
             Disco d = listaDiscos.get(i);
             if(i==0)
             {
-                out.println("<p><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+" checked>"+Integer.toString(i+1)+".-"+" Titulo ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Interprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></p>");
+                out.println("<p><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+" checked>"+Integer.toString(i+1)+".-"+" Título ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Intérprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></p>");
             }
-            else out.println("<p><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+">"+Integer.toString(i+1)+".-"+" Titulo ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Interprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></p>");        
+            else out.println("<p><input type = 'radio' name = 'pidd' value = "+d.getIDD(d)+">"+Integer.toString(i+1)+".-"+" Título ='"+d.getTitulo(d)+"' --- IDD ='"+d.getIDD(d)+"' --- Intérprete ='"+d.getInterprete(d)+"' --- Idiomas ='"+d.getIdiomas(d)+"'</input></p>");        
         }       
         out.println("<br></br>");    
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
         out.println("</form>");
-        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=11'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=11'\">Atrás</button> ");
         out.println("<br></br>");
         out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Inicio</button> ");
         out.println("</body>");
         out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("<p>sint48. @Diego Ríos Castro.</p>");                
         out.println("</footer>");
         out.println("</html>");
 }
@@ -795,8 +814,10 @@ public void doXmlF12(HttpServletResponse res,String anio, ArrayList<Disco> lista
                 out.println("</discos>");                            
             }
     }
-public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancion> listaCanciones)
+public void doHtmlF13(HttpServletResponse res, String anio, String idd, ArrayList<Cancion> listaCanciones)throws IOException
 {
+        res.setContentType("text/html; charset=utf-8");                      
+        PrintWriter out = res.getWriter();
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
@@ -817,19 +838,19 @@ public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancio
             Cancion c = listaCanciones.get(i);
             if(i==0)
             {
-                out.println("<p><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+" checked>"+Integer.toString(i+1)+".-"+" Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+" seg.'</input></p>");
+                out.println("<p><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+" checked>"+Integer.toString(i+1)+".-"+" Título ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Género ='"+c.getGenero(c)+"' --- Duración ='"+c.getDuracion(c)+" seg.'</input></p>");
             }
-            else out.println("<p><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+">"+Integer.toString(i+1)+".-"+" Titulo ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Genero ='"+c.getGenero(c)+"' --- Duracion ='"+c.getDuracion(c)+" seg.'</input></p>");        
+            else out.println("<p><input type = 'radio' name = 'pidc' value = "+c.getIdc(c)+">"+Integer.toString(i+1)+".-"+" Título ='"+c.getTitulo(c)+"' --- IDC ='"+c.getIdc(c)+"' --- Género ='"+c.getGenero(c)+"' --- Duración ='"+c.getDuracion(c)+" seg.'</input></p>");        
         }       
         out.println("<br></br>");    
         out.println("<input type = 'submit' class = 'buttonSubmit'></input>");
         out.println("</form>");
-        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=12&panio="+anio+"'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=12&panio="+anio+"'\">Atrás</button> ");
         out.println("<br></br>");    
         out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Inicio</button> ");
         out.println("</body>");
         out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("<p>sint48. @Diego Ríos Castro.</p>");                
         out.println("</footer>");
         out.println("</html>");
 
@@ -855,8 +876,10 @@ public void doXmlF13(HttpServletResponse res,String idd, ArrayList<Cancion> list
             }
             
     }
-public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
+public void doHtmlF14(HttpServletResponse res, String anio, String idd, String idc, ArrayList<Cancion> Resultado)throws IOException
 {
+        res.setContentType("text/html; charset=utf-8");                      
+        PrintWriter out = res.getWriter();
         
         out.println("<html>");
         out.println("<head>");
@@ -872,15 +895,15 @@ public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, Arra
         for(int i=0;i<Resultado.size();i++)
         {
             Cancion obj = Resultado.get(i);           
-            out.println("<p>"+Integer.toString(i+1)+".-"+" Titulo = '"+obj.getTitulo(obj)+"' --- Descripcion = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");        
+            out.println("<p>"+Integer.toString(i+1)+".-"+" Título = '"+obj.getTitulo(obj)+"' --- Descripción = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");        
         }        
         out.println("</form>");
-        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atras</button> ");
+        out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atrás</button> ");
         out.println("<br></br>");
         out.println("<button class = 'buttonInicio' onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Inicio</button> ");
         out.println("</body>");
         out.println("<footer>");
-        out.println("<p>sint48. @Diego Rios Castro.</p>");                
+        out.println("<p>sint48. @Diego Ríos Castro.</p>");                
         out.println("</footer>");
         out.println("</html>"); 
 }
