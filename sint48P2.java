@@ -197,7 +197,7 @@ public class Sint48P2 extends HttpServlet {
                 
         out.println("<html>");
         out.println("<head>");
-        //out.println("<meta charset='utf-8'></meta>");
+        out.println("<meta charset='utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");    
         out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>"); //href='iml.css' en el lab
         out.println("</head>");
@@ -250,7 +250,7 @@ public class Sint48P2 extends HttpServlet {
 
     out.println("<html>");
     out.println("<head>");
-    //out.println("<meta charset=utf-8'></meta>");
+    out.println("<meta charset='utf-8'></meta>");
     out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
 	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
     out.println("</head>");
@@ -636,9 +636,7 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                     
                     for(int k = 0;k<childCancion.getLength(); k++)
                     {
-                        //Node getParent = childCancion.item(k).getParentNode(); //Esto es cancion                        
-                        //if(getParent.equals(itemcancion))
-                        //{                            
+                                                   
                             if(childCancion.item(k).getNodeName().equals("Titulo"))
                             {
                                 atributoUno = childCancion.item(k).getTextContent();
@@ -661,24 +659,7 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                                 else {
                                     nodosText = nodosText.concat(childCancion.item(k).getNodeValue());
                                 }                                
-                            }
-                            //first = false;
-
-                            /*if(k==0 || k==6)
-                            {
-                                String cad = childCancion.item(k).getNodeName()+";"+childCancion.item(k).getTextContent().trim();
-                                //atributoCinco = childCancion.item(k).getTextContent().trim();
-                                String[] parts = cad.split(";");
-                                atributoCinco = parts[1];
-                            }
-                            
-                            /*if((childCancion.item(k).getNodeName().equals("#text")) && (k==0 || k==6))
-                            {
-                                atributoCinco = childCancion.item(k).getTextContent();
-                                //atributoCinco = childCancion.item(k).getNodeValue();
-                            }*/      
-                                                                                                 
-                        //}                                                                                            
+                            }                                                                                                                       
                     }
                     atributoCinco = nodosText.trim();
                     listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
@@ -711,7 +692,7 @@ public void doHtmlF11(PrintWriter out,HttpServletResponse res, ArrayList<String>
 {
         out.println("<html>");
         out.println("<head>");
-        //out.println("<meta charset=utf-8'></meta>");
+        out.println("<meta charset='utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
 	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
@@ -760,7 +741,7 @@ public void doHtmlF12(PrintWriter out,HttpServletResponse res, String anio, Arra
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        //out.println("<meta charset=utf-8'></meta>");
+        out.println("<meta charset='utf-8'></meta>");
 	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
@@ -817,7 +798,7 @@ public void doHtmlF13(PrintWriter out,HttpServletResponse res, String anio, Stri
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        //out.println("<meta charset=utf-8'></meta>");
+        out.println("<meta charset='utf-8'></meta>");
 	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
@@ -874,12 +855,12 @@ public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> lis
     }
 public void doHtmlF14(PrintWriter out,HttpServletResponse res, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
 {
-        //String premios[] = {""};
+        
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        //out.println("<meta charset=utf-8'></meta>");
-	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+        out.println("<meta charset='utf-8'></meta>");
+        out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
@@ -1028,7 +1009,6 @@ class Cancion {
     public String duracion = "";
     private String desc = "";
     private String premios = "";
-
     public Cancion(String atributoUno, String atributoDos, String atributoTres, String atributoCuatro, String atributoCinco, String atributoSeis) 
     {
         titulo = atributoUno;
