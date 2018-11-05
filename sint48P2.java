@@ -146,7 +146,9 @@ public class Sint48P2 extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
     {
-        res.setContentType("text/html;charset=utf-8");        
+        //res.setContentType("text/html;charset=utf-8");
+        res.setCharacterEncoding("UTF-8");
+        res.setContentType("text/html");                
         PrintWriter out = res.getWriter();
 
 	    String p = req.getParameter("p");
@@ -168,30 +170,29 @@ public class Sint48P2 extends HttpServlet {
 	{
 		switch(fase)
         	{                        
-            	case "01": doGetFase01(out,auto,res); break;
-            	case "02": doGetFase02(out,auto,res); break;
-            	case "11": doGetFase11(out,auto,res); break;
-            	case "12": doGetFase12(out,auto,res,anio); break;
-            	case "13": doGetFase13(out,auto,res,anio,idd); break;
-            	case "14": doGetFase14(out,auto,res,anio,idd,idc); break;
+            	case "01": doGetFase01(out,res,auto); break;
+            	case "02": doGetFase02(out,res,auto); break;
+            	case "11": doGetFase11(out,res,auto); break;
+            	case "12": doGetFase12(out,res,auto,anio); break;
+            	case "13": doGetFase13(out,res,auto,anio,idd); break;
+            	case "14": doGetFase14(out,res,auto,anio,idd,idc); break;
         	}
 
 	}        
     }//doGet              
-    public void doGetFase01(PrintWriter out, String auto, HttpServletResponse res)throws IOException
+    public void doGetFase01(PrintWriter out,HttpServletResponse res, String auto)throws IOException
     {
         if(auto==null)
         {
-            doHtmlF01(res,out);                
+            doHtmlF01(out);                
         }
         else if(auto.equals("si"))
         {
             doXmlF01(res);
         }                                  
     }//doHtmlF01
-    public void doHtmlF01(HttpServletResponse res, PrintWriter out)throws IOException
-    {
-                
+    public void doHtmlF01(PrintWriter out)throws IOException
+    {                
         out.println("<html>");
         out.println("<head>");
         out.println("<meta charset='utf-8'></meta>");
@@ -225,18 +226,18 @@ public class Sint48P2 extends HttpServlet {
         out.println("<status>OK</status>");
         out.println("</service>");
     }
-    public void doGetFase02(PrintWriter out, String auto, HttpServletResponse res)throws IOException
+    public void doGetFase02(PrintWriter out,HttpServletResponse res, String auto)throws IOException
     {
         if(auto==null)
         {
-            doHtmlF02(out,res);                
+            doHtmlF02(out);                
         }
         else if(auto.equals("si"))
         {
             doXmlF02(res);
         }         
     }//doGetFase02
-    public void doHtmlF02(PrintWriter out, HttpServletResponse res)
+    public void doHtmlF02(PrintWriter out)
     {
 	//int warn = warns.size();
 	//int err = errores.size();
@@ -320,21 +321,21 @@ public class Sint48P2 extends HttpServlet {
         out.println("</fatalerrors>");
         out.println("</errores>");
     }
-    public void doGetFase11(PrintWriter out, String auto,HttpServletResponse res)throws IOException
+    public void doGetFase11(PrintWriter out,HttpServletResponse res, String auto)throws IOException
     {
         Anios.clear();        
         Anios = getC1Anios(); //Anios es un array list <string>
         Collections.sort(Anios);
         if(auto==null)
         {
-            doHtmlF11(out,res,Anios);                
+            doHtmlF11(out,Anios);                
         }
         else if(auto.equals("si"))
         {
             doXmlF11(res,Anios);
         }        
     }//doGetFase11
-    public void doGetFase12(PrintWriter out, String auto, HttpServletResponse res, String anio)throws IOException
+    public void doGetFase12(PrintWriter out,HttpServletResponse res, String auto, String anio)throws IOException
     {
         listaDiscos.clear();
         ArrayList<String> interpretes = new ArrayList<String>();                
@@ -356,7 +357,7 @@ public class Sint48P2 extends HttpServlet {
         }
         if(auto==null)
         {
-             doHtmlF12(out,res,anio, listaDiscos);                
+             doHtmlF12(out,anio, listaDiscos);                
         }
         else if(auto.equals("si"))
         {
@@ -364,7 +365,7 @@ public class Sint48P2 extends HttpServlet {
         }       
         
     }//doGetFase12
-    public void doGetFase13(PrintWriter out, String auto,HttpServletResponse res, String anio, String idd)throws IOException
+    public void doGetFase13(PrintWriter out,HttpServletResponse res, String auto, String anio, String idd)throws IOException
     {
         listaCanciones.clear();
         ArrayList<Integer> dur = new ArrayList<Integer>();        
@@ -386,7 +387,7 @@ public class Sint48P2 extends HttpServlet {
         }
         if(auto==null)
         {
-            doHtmlF13(out,res,anio, idd, listaCanciones);                
+            doHtmlF13(out,anio, idd, listaCanciones);                
         }
         else if(auto.equals("si"))
         {
@@ -394,7 +395,7 @@ public class Sint48P2 extends HttpServlet {
         }       
         
     }//doGetFase13
-    public void doGetFase14(PrintWriter out, String auto, HttpServletResponse res, String anio, String idd, String idc)throws IOException
+    public void doGetFase14(PrintWriter out,HttpServletResponse res, String auto, String anio, String idd, String idc)throws IOException
     {   
         Resultado.clear();
         ArrayList<String> titulos = new ArrayList<String>();      
@@ -417,7 +418,7 @@ public class Sint48P2 extends HttpServlet {
         }        
         if(auto==null)
         {
-                doHtmlF14(out,res,anio, idd, idc, Resultado);                
+                doHtmlF14(out,anio, idd, idc, Resultado);                
         }
         else if(auto.equals("si"))
         {
@@ -689,7 +690,7 @@ public ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc) /
     }
     return Resultado;        
 }
-public void doHtmlF11(PrintWriter out,HttpServletResponse res, ArrayList<String> Anios)
+public void doHtmlF11(PrintWriter out, ArrayList<String> Anios)
 {
         out.println("<html>");
         out.println("<head>");
@@ -724,7 +725,7 @@ public void doHtmlF11(PrintWriter out,HttpServletResponse res, ArrayList<String>
         out.println("</footer>");
         out.println("</html>");
 }
-public void doXmlF11(HttpServletResponse res, ArrayList<String> Anios)throws IOException
+public void doXmlF11(HttpServletResponse res,ArrayList<String> Anios)throws IOException
 {    
         res.setContentType("text/xml");    
         PrintWriter out = res.getWriter();
@@ -737,7 +738,7 @@ public void doXmlF11(HttpServletResponse res, ArrayList<String> Anios)throws IOE
         out.println("</anios>");
 }
 
-public void doHtmlF12(PrintWriter out,HttpServletResponse res, String anio, ArrayList<Disco> listaDiscos)
+public void doHtmlF12(PrintWriter out, String anio, ArrayList<Disco> listaDiscos)
 {
         out.println("<html>");
         out.println("<head>");
@@ -774,7 +775,7 @@ public void doHtmlF12(PrintWriter out,HttpServletResponse res, String anio, Arra
         out.println("</footer>");
         out.println("</html>");
 }
-public void doXmlF12(HttpServletResponse res, String anio, ArrayList<Disco> listaDiscos)throws IOException
+public void doXmlF12(HttpServletResponse res,String anio, ArrayList<Disco> listaDiscos)throws IOException
     {
             res.setContentType("text/xml");
             PrintWriter out = res.getWriter();            
@@ -794,7 +795,7 @@ public void doXmlF12(HttpServletResponse res, String anio, ArrayList<Disco> list
                 out.println("</discos>");                            
             }
     }
-public void doHtmlF13(PrintWriter out,HttpServletResponse res, String anio, String idd, ArrayList<Cancion> listaCanciones)
+public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancion> listaCanciones)
 {
         out.println("<html>");
         out.println("<head>");
@@ -833,7 +834,7 @@ public void doHtmlF13(PrintWriter out,HttpServletResponse res, String anio, Stri
         out.println("</html>");
 
 }
-public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> listaCanciones)throws IOException
+public void doXmlF13(HttpServletResponse res,String idd, ArrayList<Cancion> listaCanciones)throws IOException
     {
             res.setContentType("text/xml");
             PrintWriter out = res.getWriter();
@@ -854,7 +855,7 @@ public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> lis
             }
             
     }
-public void doHtmlF14(PrintWriter out,HttpServletResponse res, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
+public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
 {
         
         out.println("<html>");
