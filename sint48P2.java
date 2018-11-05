@@ -149,8 +149,9 @@ public class Sint48P2 extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
     {
-        res.setContentType("text/html ; charset=UTF-8");
+        res.setContentType("text/html;charset=utf-8");        
         PrintWriter out = res.getWriter();
+
 	    String p = req.getParameter("p");
         String fase = req.getParameter("pfase");
         String anio = req.getParameter("panio");
@@ -184,18 +185,19 @@ public class Sint48P2 extends HttpServlet {
     {
         if(auto==null)
         {
-            doHtmlF01(out);                
+            doHtmlF01(res,out);                
         }
         else if(auto.equals("si"))
         {
             doXmlF01(res);
         }                                  
     }//doHtmlF01
-    public void doHtmlF01(PrintWriter out)
+    public void doHtmlF01(HttpServletResponse res, PrintWriter out)throws IOException
     {
+                
         out.println("<html>");
         out.println("<head>");
-        out.println("<meta charset=UTF-8'></meta>");
+        //out.println("<meta charset='utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");    
         out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>"); //href='iml.css' en el lab
         out.println("</head>");
@@ -230,14 +232,14 @@ public class Sint48P2 extends HttpServlet {
     {
         if(auto==null)
         {
-            doHtmlF02(out);                
+            doHtmlF02(out,res);                
         }
         else if(auto.equals("si"))
         {
             doXmlF02(res);
         }         
     }//doGetFase02
-    public void doHtmlF02(PrintWriter out)
+    public void doHtmlF02(PrintWriter out, HttpServletResponse res)
     {
 	//int warn = warns.size();
 	//int err = errores.size();
@@ -248,7 +250,7 @@ public class Sint48P2 extends HttpServlet {
 
     out.println("<html>");
     out.println("<head>");
-    out.println("<meta charset=utf-8'></meta>");
+    //out.println("<meta charset=utf-8'></meta>");
     out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
 	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
     out.println("</head>");
@@ -327,7 +329,7 @@ public class Sint48P2 extends HttpServlet {
         Collections.sort(Anios);
         if(auto==null)
         {
-            doHtmlF11(out,Anios);                
+            doHtmlF11(out,res,Anios);                
         }
         else if(auto.equals("si"))
         {
@@ -355,7 +357,7 @@ public class Sint48P2 extends HttpServlet {
         }
         if(auto==null)
         {
-             doHtmlF12(out,anio, listaDiscos);                
+             doHtmlF12(out,res,anio, listaDiscos);                
         }
         else if(auto.equals("si"))
         {
@@ -384,7 +386,7 @@ public class Sint48P2 extends HttpServlet {
         }
         if(auto==null)
         {
-            doHtmlF13(out,anio, idd, listaCanciones);                
+            doHtmlF13(out,res,anio, idd, listaCanciones);                
         }
         else if(auto.equals("si"))
         {
@@ -414,7 +416,7 @@ public class Sint48P2 extends HttpServlet {
         }        
         if(auto==null)
         {
-                doHtmlF14(out,anio, idd, idc, Resultado);                
+                doHtmlF14(out,res,anio, idd, idc, Resultado);                
         }
         else if(auto.equals("si"))
         {
@@ -545,10 +547,11 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
     String atributoTres = null;
     String atributoCuatro = null;
     String atributoCinco = null;
-    String atributoSeis = "";       
+    String atributoSeis = "";
+    String nodosText = "";
+    Boolean isFirst = false;       
     Document res = null;
-    Boolean flag = false;
-    Boolean isdesc = false;
+    Boolean flag = false;    
     ArrayList<Cancion> listares = new ArrayList<Cancion>();    
     for(int i = 0;i<listaCanciones.size();i++)
     {
@@ -615,34 +618,27 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                 }
                 if(childDiscos.item(j).getNodeName().equals("Cancion") && flag)
                 {
-                    //Node parentcancion = childDiscos.item(j).getParentNode();
-
+                    
                     Node itemcancion = childDiscos.item(j);
                     atributoCuatro=itemcancion.getAttributes().getNamedItem("idc").getTextContent();
                     NodeList childCancion = itemcancion.getChildNodes();
-                    Node primerHijo = itemcancion.getFirstChild();
-                    if(primerHijo.getNodeName().equals("#text"))
+                    /*for(int h = 0;h<childCancion.getLength();h++)
                     {
-                        atributoCinco = primerHijo.getTextContent().trim();
-                        isdesc = true; 
-                    }
-
+                        if(h==0)
+                        {
+                            atributoCinco = childCancion.item(h).getNodeName()+";"+childCancion.item(h).getTextContent().trim();
+                        }
+                        else{
+                            atributoCinco = atributoCinco+"-------"+childCancion.item(h).getNodeName()+";"+childCancion.item(h).getTextContent().trim();
+                        }
+                        
+                    }*/
+                    
                     for(int k = 0;k<childCancion.getLength(); k++)
                     {
-                        Node getParent = childCancion.item(k).getParentNode(); //Esto es cancion                        
-                        if(getParent.equals(itemcancion))
-                        {
-                            /*if(primerHijo.getNodeName().equals("#text"))
-                            {
-                                atributoCinco = primerHijo.getNodeValue().trim();
-                                //isdesc = false; 
-                            }
-                            else {
-                                if(childCancion.item(k).getNodeName().equals("#text"))
-                                {
-                                    atributoCinco = childCancion.item(k).getNodeValue().trim();
-                                }
-                            }*/
+                        //Node getParent = childCancion.item(k).getParentNode(); //Esto es cancion                        
+                        //if(getParent.equals(itemcancion))
+                        //{                            
                             if(childCancion.item(k).getNodeName().equals("Titulo"))
                             {
                                 atributoUno = childCancion.item(k).getTextContent();
@@ -655,17 +651,39 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
                             {
                                 atributoTres = childCancion.item(k).getTextContent();
                             }
-                            if(childCancion.item(k).getNodeName().equals("#text") && !isdesc)  
-                            {
-                                atributoCinco = childCancion.item(k).getNodeValue().trim();
-                                //atributoCinco = "blank";                               
+                            if(childCancion.item(k).getNodeType() == org.w3c.dom.Node.TEXT_NODE)
+                            {                                
+                                if(!isFirst)
+                                {
+                                    nodosText = childCancion.item(k).getNodeValue();
+                                    isFirst = true;
+                                }
+                                else {
+                                    nodosText = nodosText.concat(childCancion.item(k).getNodeValue());
+                                }                                
                             }
-                            //isdesc = false;
-                        }                                                                                            
+                            //first = false;
+
+                            /*if(k==0 || k==6)
+                            {
+                                String cad = childCancion.item(k).getNodeName()+";"+childCancion.item(k).getTextContent().trim();
+                                //atributoCinco = childCancion.item(k).getTextContent().trim();
+                                String[] parts = cad.split(";");
+                                atributoCinco = parts[1];
+                            }
+                            
+                            /*if((childCancion.item(k).getNodeName().equals("#text")) && (k==0 || k==6))
+                            {
+                                atributoCinco = childCancion.item(k).getTextContent();
+                                //atributoCinco = childCancion.item(k).getNodeValue();
+                            }*/      
+                                                                                                 
+                        //}                                                                                            
                     }
+                    atributoCinco = nodosText.trim();
                     listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
-                    isdesc = false;                       
-                }                               
+                    isFirst = false;                                         
+                }                
             }
             flag = false;
         }               
@@ -689,20 +707,20 @@ public static ArrayList<Cancion> getC1Resultado (String anio, String idd, String
     }
     return Resultado;        
 }
-public void doHtmlF11(PrintWriter out, ArrayList<String> Anios)
+public void doHtmlF11(PrintWriter out,HttpServletResponse res, ArrayList<String> Anios)
 {
         out.println("<html>");
         out.println("<head>");
-        out.println("<meta charset=utf-8'></meta>");
+        //out.println("<meta charset=utf-8'></meta>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-	out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
+	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");
         out.println("<h2>Consulta 1</h2>");    
         out.println("<h3>Selecciona un año:</h3>");
         out.println("<form name = 'miformfase11'>");
-	out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");    
+	    out.println("<input type = 'hidden' name = 'p' value = 'd4r18c392b'></input>");    
         out.println("<input type = 'hidden' name = 'pfase' value = '12'></input>");	
         //out.println("<ol>");
         for(int i=0;i<Anios.size();i++)
@@ -737,12 +755,12 @@ public void doXmlF11(HttpServletResponse res, ArrayList<String> Anios)throws IOE
         out.println("</anios>");
 }
 
-public void doHtmlF12(PrintWriter out, String anio, ArrayList<Disco> listaDiscos)
+public void doHtmlF12(PrintWriter out,HttpServletResponse res, String anio, ArrayList<Disco> listaDiscos)
 {
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        out.println("<meta charset=utf-8'></meta>");
+        //out.println("<meta charset=utf-8'></meta>");
 	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
@@ -788,18 +806,18 @@ public void doXmlF12(HttpServletResponse res, String anio, ArrayList<Disco> list
                 out.println("<discos>");
                 for(int i=0;i<listaDiscos.size();i++)
                 {
-                Disco d = listaDiscos.get(i);               
-                out.println("<disco idd="+d.getIDD(d)+" interprete="+d.getInterprete(d)+" langs="+d.getIdiomas(d)+">"+d.getTitulo(d)+"</disco>");
+                Disco d = listaDiscos.get(i);                       
+                    out.println("<disco idd="+d.getIDD(d)+" interprete="+d.getInterprete(d)+" langs="+d.getIdiomas(d)+">"+d.getTitulo(d)+"</disco>");
                 }
                 out.println("</discos>");                            
             }
     }
-public void doHtmlF13(PrintWriter out, String anio, String idd, ArrayList<Cancion> listaCanciones)
+public void doHtmlF13(PrintWriter out,HttpServletResponse res, String anio, String idd, ArrayList<Cancion> listaCanciones)
 {
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        out.println("<meta charset=utf-8'></meta>");
+        //out.println("<meta charset=utf-8'></meta>");
 	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
@@ -854,13 +872,13 @@ public void doXmlF13(HttpServletResponse res, String idd, ArrayList<Cancion> lis
             }
             
     }
-public void doHtmlF14(PrintWriter out, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
+public void doHtmlF14(PrintWriter out,HttpServletResponse res, String anio, String idd, String idc, ArrayList<Cancion> Resultado)
 {
         //String premios[] = {""};
         out.println("<html>");
         out.println("<head>");
         out.println("<title>Sint: Práctica 2. Consulta de canciones</title>");
-        out.println("<meta charset=utf-8'></meta>");
+        //out.println("<meta charset=utf-8'></meta>");
 	    out.println("<link rel='stylesheet' type='text/css' href='iml.css'></link>");
         out.println("</head>");
         out.println("<body>");
