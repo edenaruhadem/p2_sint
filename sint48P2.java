@@ -28,6 +28,9 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+
+
+
 //---------------------------------------------------CLASE SINT48P2--------------------------------------------------------------
 @WebServlet("/P2IM")
 public class Sint48P2 extends HttpServlet 
@@ -37,7 +40,7 @@ public class Sint48P2 extends HttpServlet
 	static String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
     static String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
     static String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
-    static String MY_SCHEMA = "iml.xsd"; //En mi ordenador este archivo y los xml están en bin. Esto es una chapuza
+    //static String MY_SCHEMA = "iml.xsd"; //En mi ordenador este archivo y los xml están en bin. Esto es una chapuza
     //static String MY_SCHEMA = "iml.xsd";
     public static Error error=null; //Objeto error
     public static String url;
@@ -57,7 +60,12 @@ public class Sint48P2 extends HttpServlet
 
 //------------------------------------------------------------SERVLET.INIT------------------------------------------------------------------------        
     public void init(ServletConfig config) throws ServletException
-    {        
+    {
+        ServletContext context = config.getServletContext();
+        File f= new File(context.getRealPath("iml.xsd"));
+        String dir = f.getAbsolutePath();               
+        String[] parts = dir.split("/");
+        String MY_SCHEMA = parts[parts.length-1];      
 	//----------------Aquí hay que leer los ficheros. Eliminar erróneos para el procesado posterior-------------    	
 	//Creada batería de parsers
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
