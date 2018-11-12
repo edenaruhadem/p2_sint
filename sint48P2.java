@@ -64,8 +64,9 @@ public class Sint48P2 extends HttpServlet
         ServletContext context = config.getServletContext();
         File f= new File(context.getRealPath("iml.xsd"));
         String dir = f.getAbsolutePath();               
-        String[] parts = dir.split("/");
-        String MY_SCHEMA = parts[parts.length-1];      
+        //String[] parts = dir.split("/");
+        //String MY_SCHEMA = parts[parts.length-1];
+        String MY_SCHEMA = dir;      
 	//----------------Aquí hay que leer los ficheros. Eliminar erróneos para el procesado posterior-------------    	
 	//Creada batería de parsers
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -179,9 +180,14 @@ public class Sint48P2 extends HttpServlet
         }        
 	else
 	{
+        String faseinicial = "01";
+        if((fase==null) || (fase.equals(faseinicial)))
+        {
+            doGetFase01(res,auto);
+        }
 		switch(fase)
         {                        
-            case "01": doGetFase01(res,auto); break;
+            //case "01": doGetFase01(res,auto); break;
             case "02": doGetFase02(res,auto); break;
             case "11": doGetFase11(res,auto); break;
             case "12": doGetFase12(res,auto,anio); break;
