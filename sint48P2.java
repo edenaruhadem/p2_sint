@@ -1,3 +1,4 @@
+package p2;
 //--------------------------------------------------IMPORTS---------------------------------------------------------------------
 import java.io.*;
 //Servlets
@@ -32,7 +33,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 
 //---------------------------------------------------CLASE SINT48P2--------------------------------------------------------------
-@WebServlet("/P2IM")
 public class Sint48P2 extends HttpServlet 
 {   
     //------------------------------------------------DECLARACIONES--------------------------------------------------------------- 
@@ -95,10 +95,9 @@ public class Sint48P2 extends HttpServlet
         }catch(ParserConfigurationException e)
         {
             e.printStackTrace();
-        }
-        //files.add("iml2001.xml");
-        listaFicheros.add("iml2001.xml"); //Archivo xml a parsear con el schema        
-        //files.add("http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/iml2001.xml");
+        }        
+        //listaFicheros.add("iml2001.xml"); //Archivo xml a parsear con el schema        
+        listaFicheros.add("http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/iml2001.xml");
 	    while(!listaFicheros.isEmpty())
         {
             url = (String) listaFicheros.getFirst();        
@@ -178,23 +177,26 @@ public class Sint48P2 extends HttpServlet
         {
             doXmlIp(res);
         }        
-	else
-	{
-        String faseinicial = "01";
-        if((fase==null) || (fase.equals(faseinicial)))
-        {
-            doGetFase01(res,auto);
-        }
-		switch(fase)
-        {                        
-            //case "01": doGetFase01(res,auto); break;
-            case "02": doGetFase02(res,auto); break;
-            case "11": doGetFase11(res,auto); break;
-            case "12": doGetFase12(res,auto,anio); break;
-            case "13": doGetFase13(res,auto,anio,idd); break;
-            case "14": doGetFase14(res,auto,anio,idd,idc); break;
-        }
-	}        
+	    else
+	    {
+            String faseinicial = "01";
+            if((fase==null) || (fase.equals(faseinicial)))
+            {
+                doGetFase01(res,auto);
+            }
+            else
+            {
+		        switch(fase)
+                {                        
+                    //case "01": doGetFase01(res,auto); break;
+                    case "02": doGetFase02(res,auto); break;
+                    case "11": doGetFase11(res,auto); break;
+                    case "12": doGetFase12(res,auto,anio); break;
+                    case "13": doGetFase13(res,auto,anio,idd); break;
+                    case "14": doGetFase14(res,auto,anio,idd,idc); break;
+                }
+            }
+	    }        
     }//doGet
     
 //---------------------------------------------------------FUNCTIONS------------------------------------------------------------------------
@@ -207,7 +209,7 @@ public class Sint48P2 extends HttpServlet
         else if(auto.equals("si"))
         {
             doXmlF01(res);
-        }                                  
+        }        
     }//doHtmlF01
     public void doHtmlF01(HttpServletResponse res)throws IOException
     {                            
