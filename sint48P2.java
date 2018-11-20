@@ -29,7 +29,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.*;
 
 //---------------------------------------------------CLASE SINT48P2--------------------------------------------------------------
 public class Sint48P2 extends HttpServlet 
@@ -39,7 +41,6 @@ public class Sint48P2 extends HttpServlet
 	static String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
     static String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
     static String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";    
-    public static Error error=null; //Objeto error
     public static String url;
     public String rutaXml = "http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/";
 	//Declaración de estructuras de datos
@@ -50,12 +51,14 @@ public class Sint48P2 extends HttpServlet
     public  ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
     public  ArrayList<Cancion>Resultado = new ArrayList<Cancion>();
     //public static ArrayList<String>fichErroneos = new ArrayList<String>();
-    public static ArrayList<String>listaErrores= new ArrayList<String>();
-    public static ArrayList<String>listaEFatales = new ArrayList<String>();
-    public static ArrayList<String>listaWarnings = new ArrayList<String>();
-    public static ArrayList<String>urlErrores= new ArrayList<String>();
+    public Map<String,String>Errores= new HashMap<String,String>();
+    public Map<String,String>EFatales = new HashMap<String,String>();
+    public Map<String,String>Warnings = new HashMap<String,String>();
+    /*public static ArrayList<String>urlErrores= new ArrayList<String>();
     public static ArrayList<String>urlEFatales = new ArrayList<String>();
-    public static ArrayList<String>urlWarnings = new ArrayList<String>();
+    public static ArrayList<String>urlWarnings = new ArrayList<String>();*/
+    public boolean error = false;
+    public String mensajeError = "";
     //public ArrayList<Document>documentos = new ArrayList<Document>;
 
 //------------------------------------------------------------SERVLET.INIT------------------------------------------------------------------------        
@@ -84,21 +87,26 @@ public class Sint48P2 extends HttpServlet
         {
             //Creacion de un parser de la familia de la batería de antes
             db = dbf.newDocumentBuilder();
-            error = new Error(); //Creacion del objeto error
+            ErrorHandler er = new ErrorHandler(); //Creacion del objeto error
             //Asingación de la clase de control de errores al parser 
-            db.setErrorHandler(error);
+            db.setErrorHandler(er);
         }catch(ParserConfigurationException e)
         {
             e.printStackTrace();
         }        
         try
         {
-            doc = db.parse(new URL(rutaXml+"iml2001.xml").openStream());            
+            //listaFicheros.add(rutaXml+"iml2001.xml");
+            //url = (String) listaFicheros.getFirst();
+            doc = db.parse(new URL(rutaXml+"iml2001.xml").openStream());
+            leidos.add(url);            
             buscaIml(doc, mapDocs);
             listaFicheros.removeFirst();
         }catch(SAXException e)
         {
-            e.printStackTrace();                    
+            //System.out.println("SAXXXXXXXXXXXXX del primero");
+            e.printStackTrace();
+            error = true;                    
         }catch(IOException e)
         {
             e.printStackTrace();
@@ -118,37 +126,24 @@ public class Sint48P2 extends HttpServlet
                     doc = db.parse(new URL(url).openStream());
                     leidos.add(url);                    
                 }catch(SAXException e)
-                {
-                    e.printStackTrace();                    
+                {                    
+                    e.printStackTrace();
+                    error = true;
+                    //System.out.println("SAXXXXXXXXXXXXX");                    
                 }catch(IOException e)
                 {
+                    //System.out.println("IIIIIIOOOOOOOOO");
                     e.printStackTrace();
                 }catch(Exception e)
                 {
+                    //System.out.println("EEEEEEEEEEEEEEE");
                     e.printStackTrace();
+                }                
+                if(!error)
+                {
+                    buscaIml(doc, mapDocs);
                 }
-                if(error.hasError())
-                {                    
-                    if(!error.getWarning().equals(""))
-                    {                        
-                        listaWarnings.add(error.getWarning());
-                        urlWarnings.add(leidos.get(leidos.size()-1));
-                    }
-                    if(!error.getErrores().equals(""))
-                    {                        
-                        listaErrores.add(error.getErrores());
-                        urlErrores.add(leidos.get(leidos.size()-1));
-                    }
-                    if(!error.getFatalError().equals(""))
-                    {                        
-                        listaEFatales.add(error.getFatalError());
-                        urlEFatales.add(leidos.get(leidos.size()-1));
-                    }
-                }//if hasError()
-                else
-                {    
-                    buscaIml(doc, mapDocs);                    
-                }//else hasError
+                error = false;
             }//if leidos containsURL
             listaFicheros.removeFirst();            
         }///While true		
@@ -277,10 +272,6 @@ public class Sint48P2 extends HttpServlet
     public void doHtmlF02(HttpServletResponse res)throws IOException
     {	               
         PrintWriter out = res.getWriter();
-        int numError = listaErrores.size();
-        int numEFatal = listaEFatales.size();
-        int numWarning = listaWarnings.size();    
-
         out.println("<html>");
         out.println("<head>");    
         out.println("<meta charset='utf-8'></meta>");
@@ -289,21 +280,27 @@ public class Sint48P2 extends HttpServlet
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servicio de consulta de canciones</h1>");	    
-        out.println("<h2>Se han encontrado "+numWarning+" ficheros con warnings.</h2>");        
-        for (int i=0;i<numWarning;i++)
-	    {
-	        out.println("<p>"+listaWarnings.get(i)+"</p>");
-	    }        	
-        out.println("<h2>Se han encontrado "+numError+" ficheros con errores</h2>");               
-        for (int i=0;i<listaErrores.size();i++)
-	    {
-	        out.println("<p>"+listaErrores.get(i)+"</p>");
-        }        	              
-        out.println("<h2>Se han encontrado "+numEFatal+" ficheros con errores fatales</h2>");       
-        for (int i=0;i<numEFatal;i++)
-	    {
-	        out.println("<p>"+listaEFatales.get(i)+"</p>");
-	    }         	              
+        out.println("<h2>Se han encontrado "+Warnings.size()+" ficheros con warnings.</h2>");
+        Iterator it = Warnings.keySet().iterator();
+        while(it.hasNext())
+        {
+            String key = (String)it.next();
+            out.println("<p>"+key+"--------"+Warnings.get(key)+"</p>");
+        }               	
+        out.println("<h2>Se han encontrado "+Errores.size()+" ficheros con errores</h2>");
+        it = Errores.keySet().iterator();
+        while(it.hasNext())
+        {
+            String key = (String)it.next();
+            out.println("<p>"+key+"--------"+Errores.get(key)+"</p>");
+        }              	              
+        out.println("<h2>Se han encontrado "+EFatales.size()+" ficheros con errores fatales</h2>");
+        it = EFatales.keySet().iterator();
+        while(it.hasNext())
+        {
+            String key = (String)it.next();
+            out.println("<p>"+key+"--------"+EFatales.get(key)+"</p>");
+        }               	              
         out.println("<button class = 'buttonAtras'onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=01'\">Atr&aacute;s</button>");
         out.println("</body>");
         out.println("<footer>");
@@ -319,31 +316,37 @@ public class Sint48P2 extends HttpServlet
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
         out.println("<errores>");
         out.println("<warnings>");
-        for(int i=0;i<listaWarnings.size();i++)
+        Iterator it = Warnings.keySet().iterator();
+        while(it.hasNext())
         {
+            String key = (String)it.next();
             out.println("<warning>");        
-            out.println("<file>"+urlWarnings.get(i)+"</file>");
-            out.println("<cause>"+listaWarnings.get(i)+"</cause>");
+            out.println("<file>"+key+"</file>");
+            out.println("<cause>"+Warnings.get(key)+"</cause>");
             out.println("</warning>");
-        }   
+        }           
         out.println("</warnings>");
-        out.println("<errors>");        
-        for(int i=0;i<listaErrores.size();i++)
+        out.println("<errors>");
+        it = Errores.keySet().iterator();
+        while(it.hasNext())
         {
+            String key = (String)it.next();
             out.println("<error>");
-            out.println("<file>"+urlErrores.get(i)+"</file>");
-            out.println("<cause>"+listaErrores.get(i)+"</cause>");
+            out.println("<file>"+key+"</file>");
+            out.println("<cause>"+Errores.get(key)+"</cause>");
             out.println("</error>");
-        }        
+        }               
         out.println("</errors>");
         out.println("<fatalerrors>");
-        for(int i =0;i<listaEFatales.size();i++)
+        it = EFatales.keySet().iterator();
+        while(it.hasNext())
         {
+            String key = (String)it.next();
             out.println("<fatalerror>");
-            out.println("<file>"+urlEFatales.get(i)+"</file>");
-            out.println("<cause>"+listaEFatales.get(i)+"</cause>");
+            out.println("<file>"+key+"</file>");
+            out.println("<cause>"+EFatales.get(key)+"</cause>");
             out.println("</fatalerror>");
-        }      
+        }              
         out.println("</fatalerrors>");
         out.println("</errores>");
     }//doXmlF02
@@ -978,69 +981,38 @@ public class Sint48P2 extends HttpServlet
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
         out.println("<wrongRequest>bad passwd</wrongRequest>");        
     }//doXmlIp
-}//Fin SINT48P2
+//}//Fin SINT48P2
 
 //-----------------------------------------------------------------ERROR CLASS-----------------------------------------------------------------------
-class Error extends DefaultHandler 
-{
-    //Atributos
-    private boolean err = false;
-    private String warns = "";
-	private String errores = "";
-    private String fatalErr = "";
-
-    //Constructor    
-    public Error () {} 
+class ErrorHandler extends DefaultHandler 
+{    
+    public ErrorHandler () {} 
 
     //Metodos
     public void warning (SAXParseException spe) throws SAXException 
     {        
-        err = true;
-        warns = "Warning: "+spe.toString(); 
-        System.out.println("Warning: "+spe.toString());         
+        error = true;
+        mensajeError = "Warning: "+spe.toString(); 
+        System.out.println("Warning: "+spe.toString());
+        Warnings.put(spe.getSystemId(),mensajeError);       
     }
 
     public void error (SAXParseException spe) throws SAXException 
     {         
-        err = true;
-        errores = "Error: "+spe.toString();
-        System.out.println("Error: "+spe.toString());         
+        error = true;
+        mensajeError = "Error: "+spe.toString();
+        System.out.println("Error: "+spe.toString());
+        Errores.put(spe.getSystemId(),mensajeError);         
     }
 
     public void fatalerror (SAXParseException spe) throws SAXException 
     {        
-        err = true;
-        fatalErr = "Fatal Error: "+spe.toString();
-        System.out.println("Fatal Error: "+spe.toString());        
-    }
-
-    public boolean hasError()
-    {
-        if(err)
-        {
-            err = false;
-            return true;
-        }
-        else
-        {
-            err = false;
-            return false;
-        }
-    }
-    
-    public String getWarning()
-    {        
-        return warns;
-    }
-    public String getErrores()
-    {        
-        return errores;
-    }
-    public String getFatalError()
-    {        
-        return fatalErr;
-    }
-}//Fin clase errores
+        error = true;
+        mensajeError = "Fatal Error: "+spe.toString();
+        System.out.println("Fatal Error: "+spe.toString()); 
+        EFatales.put(spe.getSystemId(),mensajeError);       
+    }    
+}//Fin error handler
 
 //---------------------------------------------------------------------CLASE DISCO-----------------------------------------------------------------
 class Disco
@@ -1130,4 +1102,5 @@ class Cancion
         return c.premios;
     }
 }//fin clase Cancion
+}//Fin SINT48P2
 //-------------------------------------------------------------------------------END--------------------------------------------------------------------
