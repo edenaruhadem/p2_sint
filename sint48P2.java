@@ -166,7 +166,7 @@ public class Sint48P2 extends HttpServlet
         String idd = req.getParameter("pidd");
         String idc = req.getParameter("pidc");
         String auto = req.getParameter("auto");      
-
+                
         if((p==null)&&(auto.equals("si")))
         {
             doXmlNop(res);
@@ -370,16 +370,23 @@ public class Sint48P2 extends HttpServlet
         listaDiscos = getC1Discos(anio);
         for(int i=0;i<listaDiscos.size();i++)
         {
-            interpretes.add(listaDiscos.get(i).interprete); 
+            Disco objDisco = listaDiscos.get(i);
+            interpretes.add(objDisco.getInterprete(objDisco)); 
         }
         Collections.sort(interpretes);        
-        for(int j = 0;j<listaDiscos.size();j++)
+        for(int j = 0;j<interpretes.size();j++)
         {
-            Disco obj = listaDiscos.get(j);
-            String inter = obj.interprete;
-            int indice = interpretes.indexOf(inter);
-            listaDiscos.remove(obj);
-            listaDiscos.add(indice, obj);
+            String interlist = interpretes.get(j);
+            for(int k = 0;k<listaDiscos.size();k++)
+            {
+                Disco obj = listaDiscos.get(k);
+                String inter = obj.getInterprete(obj);
+                if(inter.equals(interlist))
+                {
+                    listaDiscos.remove(obj);
+                    listaDiscos.add(obj);
+                }
+            }           
         }
         if(auto==null)
         {
@@ -398,17 +405,24 @@ public class Sint48P2 extends HttpServlet
         listaCanciones = getC1Canciones(anio, idd);
         for(int i=0;i<listaCanciones.size();i++)
         {
-            dur.add(Integer.parseInt(listaCanciones.get(i).duracion)); 
+            Cancion objCancion = listaCanciones.get(i);
+            dur.add(Integer.parseInt(objCancion.getDuracion(objCancion))); 
         }
-        Collections.sort(dur);        
-        for(int j = 0;j<listaCanciones.size();j++)
+        Collections.sort(dur);
+        for(int j = 0;j<dur.size();j++)
         {
-            Cancion obj = listaCanciones.get(j);
-            String dura = obj.duracion;
-            int indice = dur.indexOf(Integer.parseInt(dura));
-            listaCanciones.remove(obj);
-            listaCanciones.add(indice, obj);
-        }
+            Integer durlist = dur.get(j);
+            for(int k = 0;k<listaCanciones.size();k++)
+            {
+                Cancion obj = listaCanciones.get(k);
+                String dura = obj.getDuracion(obj);
+                if(Integer.toString(durlist).equals(dura))
+                {
+                    listaCanciones.remove(obj);
+                    listaCanciones.add(obj);
+                }
+            }           
+        }        
         if(auto==null)
         {
             doHtmlF13(res,anio, idd, listaCanciones);                
@@ -426,18 +440,25 @@ public class Sint48P2 extends HttpServlet
         Resultado = getC1Resultado(anio, idd, idc);
         for(int i=0;i<Resultado.size();i++)
         {
-            titulos.add(Resultado.get(i).titulo); 
+            Cancion objRes = Resultado.get(i);
+            titulos.add(objRes.getTitulo(objRes)); 
         }
         Comparator<String> comparador = Collections.reverseOrder();
-        Collections.sort(titulos, comparador);        
-        for(int j = 0;j<Resultado.size();j++)
+        Collections.sort(titulos, comparador);
+        for(int j = 0;j<titulos.size();j++)
         {
-            Cancion obj = Resultado.get(j);
-            String tit = obj.titulo;
-            int indice = titulos.indexOf(tit);
-            Resultado.remove(obj);
-            Resultado.add(indice, obj);
-        }        
+            String titlist = titulos.get(j);
+            for(int k = 0;k<Resultado.size();k++)
+            {
+                Cancion obj = Resultado.get(k);
+                String titu = obj.getTitulo(obj);
+                if(titlist.equals(titu))
+                {
+                    Resultado.remove(obj);
+                    Resultado.add(obj);
+                }
+            }           
+        }               
         if(auto==null)
         {
             doHtmlF14(res,anio, idd, idc, Resultado);                
@@ -451,8 +472,7 @@ public class Sint48P2 extends HttpServlet
     public ArrayList<String> getC1Anios()
     {	
         for(String key:mapDocs.keySet())
-        {
-            //System.out.println("eeeeeeeeeeeeeeeeeeeeooooooooooooooooooooo"+key);
+        {            
             Anios.add(key);
         }	
 	    return Anios;    
