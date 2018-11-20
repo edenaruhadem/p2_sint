@@ -1,6 +1,7 @@
 package p2;
 //--------------------------------------------------IMPORTS---------------------------------------------------------------------
 import java.io.*;
+import java.net.*;
 //Servlets
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -17,6 +18,7 @@ import java.util.LinkedList;
 import java.util.Iterator;
 //Parsers, DOM y Exceptions
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.validation.*;
 import javax.security.sasl.SaslException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,8 +46,11 @@ public class Sint48P2 extends HttpServlet
     //static String MY_SCHEMA = "iml.xsd";
     public static Error error=null; //Objeto error
     public static String url;
+    public String rutaXml = "http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/";
 	//Declaración de estructuras de datos
-	public static HashMap<String,Document> mapDocs = new HashMap<String,Document>();	
+    public static HashMap<String,Document> mapDocs = new HashMap<String,Document>();
+    public static LinkedList<String> listaFicheros = new LinkedList<String>();
+
     public  ArrayList<String>Anios = new ArrayList<String>();
     public  ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
     public  ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
@@ -57,11 +62,13 @@ public class Sint48P2 extends HttpServlet
     public static ArrayList<String>urlErrores= new ArrayList<String>();
     public static ArrayList<String>urlEFatales = new ArrayList<String>();
     public static ArrayList<String>urlWarnings = new ArrayList<String>();
+    //public ArrayList<Document>documentos = new ArrayList<Document>;
 
 //------------------------------------------------------------SERVLET.INIT------------------------------------------------------------------------        
     public void init(ServletConfig config) throws ServletException
     {
         ServletContext context = config.getServletContext();
+        //File f= new File(context.getRealPath("iml1.xsd"));
         File f= new File(context.getRealPath("iml.xsd"));
         String dir = f.getAbsolutePath();               
         //String[] parts = dir.split("/");
@@ -79,7 +86,7 @@ public class Sint48P2 extends HttpServlet
         DocumentBuilder db = null;
         Document doc = null;
 	    //Estructura dinámica de todos los archivos obtenidos al leer uno (mediante los tags IML)
-        LinkedList<String> listaFicheros = new LinkedList<String>();        
+        //LinkedList<String> listaFicheros = new LinkedList<String>();        
         //Estructura dinámica para no repetir archivos 
         ArrayList<String> leidos = new ArrayList<String>();    //Era HashSet            
 	    String strAnios = null;
@@ -95,9 +102,28 @@ public class Sint48P2 extends HttpServlet
         }catch(ParserConfigurationException e)
         {
             e.printStackTrace();
-        }        
-        //listaFicheros.add("iml2001.xml"); //Archivo xml a parsear con el schema        
-        listaFicheros.add("http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/iml2001.xml");
+        }
+        
+        try
+        {
+            doc = db.parse(new URL(rutaXml+"iml2001.xml").openStream());
+            //documentos.add(doc);
+            buscaIml(doc, mapDocs);
+            listaFicheros.removeFirst();
+        }catch(SAXException e)
+        {
+            e.printStackTrace();                    
+        }catch(IOException e)
+        {
+            e.printStackTrace();
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }       
+
+        //listaFicheros.add("iml2001.xml"); //Archivo xml a parsear con el schema
+        //Meter aqui los direccionamientos que se encuentra el primer doc        
+        //listaFicheros.add("http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/iml2001.xml");
 	    while(!listaFicheros.isEmpty())
         {
             url = (String) listaFicheros.getFirst();        
@@ -107,7 +133,7 @@ public class Sint48P2 extends HttpServlet
                 {
                     //Generacion del arbol DOM tras el parseo. Generará un error el método parse si el documento no  es well-formed. 				Una SAXException
                 //Saltará la clase de gestión de errores en caso de que los contenga (no válido según el schema xml 				definido).            
-                    doc = db.parse(url);
+                    doc = db.parse(new URL(url).openStream());
                     leidos.add(url);                    
                 }catch(SAXException e)
                 {
@@ -138,8 +164,9 @@ public class Sint48P2 extends HttpServlet
                     }
                 }//if hasError()
                 else
-                {                    		    
-                    Element raiz = doc.getDocumentElement(); //Obtencion del elemento Songs
+                {    
+                    buscaIml(doc, mapDocs);                		    
+                    /*Element raiz = doc.getDocumentElement(); //Obtencion del elemento Songs
                     NodeList anios = raiz.getElementsByTagName("Anio"); //Recoge todos los elementos anios del xml. Solo hay uno
                     NodeList urls = raiz.getElementsByTagName("IML"); //Recoge todos los elementos IML del xml
                     Node itemAnio =anios.item(0);                    
@@ -149,7 +176,7 @@ public class Sint48P2 extends HttpServlet
                     {
                         Node itemUrl = urls.item(i);                        
                         listaFicheros.add(itemUrl.getTextContent());                        
-                    }
+                    }*/
                 }//else hasError
             }//if leidos containsURL
             listaFicheros.removeFirst();            
@@ -200,6 +227,22 @@ public class Sint48P2 extends HttpServlet
     }//doGet
     
 //---------------------------------------------------------FUNCTIONS------------------------------------------------------------------------
+    public void buscaIml(Document doc, HashMap<String,Document> mapDocs)
+    {
+        Element raiz = doc.getDocumentElement(); //Obtencion del elemento Songs
+        NodeList anios = raiz.getElementsByTagName("Anio"); //Recoge todos los elementos anios del xml. Solo hay uno
+        NodeList urls = raiz.getElementsByTagName("IML"); //Recoge todos los elementos IML del xml
+        Node itemAnio =anios.item(0);                    
+		String strAnios = itemAnio.getTextContent();
+		mapDocs.put(strAnios,doc);                    
+        for(int i = 0;i<urls.getLength();i++) //El acceso al texto de IML produce redirecciones a nuevos documentos
+        {
+            Node itemUrl = urls.item(i);                        
+            listaFicheros.add(rutaXml+itemUrl.getTextContent().trim());                        
+        }
+        //listaFicheros.removeFirst();
+    }
+
     public void doGetFase01(HttpServletResponse res, String auto)throws IOException
     {
         if(auto==null)
@@ -439,6 +482,7 @@ public class Sint48P2 extends HttpServlet
     {	
         for(String key:mapDocs.keySet())
         {
+            //System.out.println("eeeeeeeeeeeeeeeeeeeeooooooooooooooooooooo"+key);
             Anios.add(key);
         }	
 	    return Anios;    
