@@ -631,8 +631,9 @@ public class Sint48P2 extends HttpServlet
         }            
         for (String key:mapDocs.keySet())
         {
-            res = mapDocs.get(key);    
-            Element raiz = res.getDocumentElement();
+            res = mapDocs.get(key);
+            //Document doc = mapDocs.get(value);    
+            Element raiz = res.getDocumentElement(); 
             NodeList nodeDiscos = raiz.getElementsByTagName("Disco");            
             for(int i = 0;i<nodeDiscos.getLength();i++)
             {
@@ -645,38 +646,77 @@ public class Sint48P2 extends HttpServlet
                         String nameInt = childDiscos.item(j).getTextContent();
                         if(nameInt.equals(interprete))
                         {
-                            flag = true;                        
-                        }
-                        if(flag)
-                        {
+                            flag = true;
                             Node parentInterprete = childDiscos.item(j).getParentNode();
                             NodeList hijosDisco = parentInterprete.getChildNodes();
-                            for (int x = 0; x<hijosDisco.getLength();x++)
+                            for (int x = 0; x<hijosDisco.getLength();x++) //hijos:titulo,premios,interprete,cancion
                             {
                                 Node hijoPremios = hijosDisco.item(x);
                                 if(hijoPremios.getNodeName().equals("Premios"))
                                 {                            
-                                    NodeList hayPremios = hijoPremios.getChildNodes();
+                                    NodeList hayPremios = hijoPremios.getChildNodes(); //Node List de premios
                                     for (int m = 0;m<hayPremios.getLength();m++)
                                     {
                                         Node premio = hayPremios.item(m);
                                         if((premio.getNodeName().equals("Premio")) && (m==0))
                                         {
-                                            atributoSeis = premio.getTextContent();
+                                            atributoSeis = premio.getTextContent().trim();
                                             //atributoSeis = "blank";
                                         }
                                         else if((premio.getNodeName().equals("Premio")) && (m!=0))
                                         {
-                                            atributoSeis = atributoSeis+" "+premio.getTextContent();
+                                            atributoSeis = (atributoSeis+" "+premio.getTextContent()).trim();
                                             //atributoSeis = "blank";
                                         }
+                                        //atributoSeis = (atributoSeis+premio.getTextContent()).trim();
                                     }
                                 }
+                                /*else if(hijoPremios.getNodeName().equals("Cancion"))
+                                {
+                                    atributoCuatro=hijoPremios.getAttributes().getNamedItem("idc").getTextContent();
+                                    NodeList childCancion = hijoPremios.getChildNodes();
+                                    for(int k = 0;k<childCancion.getLength(); k++)
+                                    {                                                   
+                                        if(childCancion.item(k).getNodeName().equals("Titulo"))
+                                        {
+                                            atributoUno = childCancion.item(k).getTextContent();
+                                        }
+                                        if(childCancion.item(k).getNodeName().equals("Genero"))
+                                        {
+                                            atributoDos = childCancion.item(k).getTextContent();
+                                        }
+                                        if(childCancion.item(k).getNodeName().equals("Duracion"))
+                                        {
+                                            atributoTres = childCancion.item(k).getTextContent();
+                                        }
+                                        if(childCancion.item(k).getNodeType() == org.w3c.dom.Node.TEXT_NODE)
+                                        {                                
+                                            if(!isFirst)
+                                            {
+                                                nodosText = childCancion.item(k).getNodeValue();
+                                                isFirst = true;
+                                            }
+                                            else
+                                            {
+                                                nodosText = nodosText.concat(childCancion.item(k).getNodeValue());
+                                            }                                
+                                        }                                                                                                                       
+                                    }
+                                    atributoCinco = nodosText.trim();
+                                }
+                                /*listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
+                                isFirst = false;*/
                             }
-                        }                                         
+                            /*listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
+                            isFirst = false;*/
+                        }
+                        else 
+                        {
+                            flag = false;
+                        }                                                                 
                     }
-                    if(childDiscos.item(j).getNodeName().equals("Cancion") && flag)
-                    {                   
+                    else if(childDiscos.item(j).getNodeName().equals("Cancion") && flag)
+                    {
                         Node itemcancion = childDiscos.item(j);
                         atributoCuatro=itemcancion.getAttributes().getNamedItem("idc").getTextContent();
                         NodeList childCancion = itemcancion.getChildNodes();                   
@@ -709,10 +749,19 @@ public class Sint48P2 extends HttpServlet
                         }
                         atributoCinco = nodosText.trim();
                         listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
+                        atributoUno = null;
+                        atributoDos = null;
+                        atributoTres = null;
+                        atributoCuatro = null;
+                        atributoCinco = null;                        
                         isFirst = false;                                         
-                    }                
+                    }
+
+                    //listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));                    
                 }//Cierra for recorrer hijos Disco
+                atributoSeis="";
                 flag = false;
+                //listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
             }//Cierra for recorrer nodos Disco               
         }//Cierra for recorrer hashmap mapDocs
 
