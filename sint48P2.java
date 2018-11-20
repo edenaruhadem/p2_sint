@@ -994,15 +994,15 @@ class ErrorHandler extends DefaultHandler
         error = true;
         mensajeError = "Warning: "+spe.toString(); 
         System.out.println("Warning: "+spe.toString());
-        Warnings.put(spe.getSystemId(),mensajeError);       
+        Warnings.put(url,mensajeError);       
     }
 
     public void error (SAXParseException spe) throws SAXException 
     {         
         error = true;
         mensajeError = "Error: "+spe.toString();
-        System.out.println("Error: "+spe.toString());
-        Errores.put(spe.getSystemId(),mensajeError);         
+        System.out.println("Error: "+spe.toString());        
+        Errores.put(url,mensajeError);         
     }
 
     public void fatalerror (SAXParseException spe) throws SAXException 
@@ -1010,7 +1010,7 @@ class ErrorHandler extends DefaultHandler
         error = true;
         mensajeError = "Fatal Error: "+spe.toString();
         System.out.println("Fatal Error: "+spe.toString()); 
-        EFatales.put(spe.getSystemId(),mensajeError);       
+        EFatales.put(url,mensajeError);       
     }    
 }//Fin error handler
 
