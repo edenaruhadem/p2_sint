@@ -31,9 +31,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
-
-
 //---------------------------------------------------CLASE SINT48P2--------------------------------------------------------------
 public class Sint48P2 extends HttpServlet 
 {   
@@ -41,16 +38,13 @@ public class Sint48P2 extends HttpServlet
 	//Atributes Schema
 	static String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
     static String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-    static String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
-    //static String MY_SCHEMA = "iml.xsd"; //En mi ordenador este archivo y los xml están en bin. Esto es una chapuza
-    //static String MY_SCHEMA = "iml.xsd";
+    static String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";    
     public static Error error=null; //Objeto error
     public static String url;
     public String rutaXml = "http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/";
 	//Declaración de estructuras de datos
     public static HashMap<String,Document> mapDocs = new HashMap<String,Document>();
     public static LinkedList<String> listaFicheros = new LinkedList<String>();
-
     public  ArrayList<String>Anios = new ArrayList<String>();
     public  ArrayList<Disco>listaDiscos = new ArrayList<Disco>();
     public  ArrayList<Cancion>listaCanciones = new ArrayList<Cancion>();
@@ -67,12 +61,9 @@ public class Sint48P2 extends HttpServlet
 //------------------------------------------------------------SERVLET.INIT------------------------------------------------------------------------        
     public void init(ServletConfig config) throws ServletException
     {
-        ServletContext context = config.getServletContext();
-        //File f= new File(context.getRealPath("iml1.xsd"));
+        ServletContext context = config.getServletContext();        
         File f= new File(context.getRealPath("iml.xsd"));
-        String dir = f.getAbsolutePath();               
-        //String[] parts = dir.split("/");
-        //String MY_SCHEMA = parts[parts.length-1];
+        String dir = f.getAbsolutePath();        
         String MY_SCHEMA = dir;      
 	//----------------Aquí hay que leer los ficheros. Eliminar erróneos para el procesado posterior-------------    	
 	//Creada batería de parsers
@@ -84,13 +75,10 @@ public class Sint48P2 extends HttpServlet
         dbf.setAttribute(JAXP_SCHEMA_SOURCE, MY_SCHEMA);
         //Declaración de objetos: db y doc(almacén del árbol)       
         DocumentBuilder db = null;
-        Document doc = null;
-	    //Estructura dinámica de todos los archivos obtenidos al leer uno (mediante los tags IML)
-        //LinkedList<String> listaFicheros = new LinkedList<String>();        
+        Document doc = null;	            
         //Estructura dinámica para no repetir archivos 
         ArrayList<String> leidos = new ArrayList<String>();    //Era HashSet            
-	    String strAnios = null;
-        //HashSet<String> anios_hash = new HashSet<String>();
+	    String strAnios = null;        
 	    //-------------Objeto clase document builder dbf(conjunto de parsers)------------------
 	    try
         {
@@ -102,12 +90,10 @@ public class Sint48P2 extends HttpServlet
         }catch(ParserConfigurationException e)
         {
             e.printStackTrace();
-        }
-        
+        }        
         try
         {
-            doc = db.parse(new URL(rutaXml+"iml2001.xml").openStream());
-            //documentos.add(doc);
+            doc = db.parse(new URL(rutaXml+"iml2001.xml").openStream());            
             buscaIml(doc, mapDocs);
             listaFicheros.removeFirst();
         }catch(SAXException e)
@@ -119,11 +105,7 @@ public class Sint48P2 extends HttpServlet
         }catch(Exception e)
         {
             e.printStackTrace();
-        }       
-
-        //listaFicheros.add("iml2001.xml"); //Archivo xml a parsear con el schema
-        //Meter aqui los direccionamientos que se encuentra el primer doc        
-        //listaFicheros.add("http://gssi.det.uvigo.es/users/agil/public_html/SINT/18-19/iml2001.xml");
+        }        
 	    while(!listaFicheros.isEmpty())
         {
             url = (String) listaFicheros.getFirst();        
@@ -131,7 +113,7 @@ public class Sint48P2 extends HttpServlet
             {
                 try
                 {
-                    //Generacion del arbol DOM tras el parseo. Generará un error el método parse si el documento no  es well-formed. 				Una SAXException
+                //Generacion del arbol DOM tras el parseo. Generará un error el método parse si el documento no  es well-formed. 				Una SAXException
                 //Saltará la clase de gestión de errores en caso de que los contenga (no válido según el schema xml 				definido).            
                     doc = db.parse(new URL(url).openStream());
                     leidos.add(url);                    
@@ -165,18 +147,7 @@ public class Sint48P2 extends HttpServlet
                 }//if hasError()
                 else
                 {    
-                    buscaIml(doc, mapDocs);                		    
-                    /*Element raiz = doc.getDocumentElement(); //Obtencion del elemento Songs
-                    NodeList anios = raiz.getElementsByTagName("Anio"); //Recoge todos los elementos anios del xml. Solo hay uno
-                    NodeList urls = raiz.getElementsByTagName("IML"); //Recoge todos los elementos IML del xml
-                    Node itemAnio =anios.item(0);                    
-		            strAnios = itemAnio.getTextContent();
-		            mapDocs.put(strAnios,doc);                    
-                    for(int i = 0;i<urls.getLength();i++) //El acceso al texto de IML produce redirecciones a nuevos documentos
-                    {
-                        Node itemUrl = urls.item(i);                        
-                        listaFicheros.add(itemUrl.getTextContent());                        
-                    }*/
+                    buscaIml(doc, mapDocs);                    
                 }//else hasError
             }//if leidos containsURL
             listaFicheros.removeFirst();            
@@ -239,8 +210,7 @@ public class Sint48P2 extends HttpServlet
         {
             Node itemUrl = urls.item(i);                        
             listaFicheros.add(rutaXml+itemUrl.getTextContent().trim());                        
-        }
-        //listaFicheros.removeFirst();
+        }        
     }
 
     public void doGetFase01(HttpServletResponse res, String auto)throws IOException
@@ -665,50 +635,11 @@ public class Sint48P2 extends HttpServlet
                                         }
                                         else if((premio.getNodeName().equals("Premio")) && (m!=0))
                                         {
-                                            atributoSeis = (atributoSeis+" "+premio.getTextContent()).trim();
-                                            //atributoSeis = "blank";
-                                        }
-                                        //atributoSeis = (atributoSeis+premio.getTextContent()).trim();
+                                            atributoSeis = (atributoSeis+" "+premio.getTextContent()).trim();                                            
+                                        }                                        
                                     }
-                                }
-                                /*else if(hijoPremios.getNodeName().equals("Cancion"))
-                                {
-                                    atributoCuatro=hijoPremios.getAttributes().getNamedItem("idc").getTextContent();
-                                    NodeList childCancion = hijoPremios.getChildNodes();
-                                    for(int k = 0;k<childCancion.getLength(); k++)
-                                    {                                                   
-                                        if(childCancion.item(k).getNodeName().equals("Titulo"))
-                                        {
-                                            atributoUno = childCancion.item(k).getTextContent();
-                                        }
-                                        if(childCancion.item(k).getNodeName().equals("Genero"))
-                                        {
-                                            atributoDos = childCancion.item(k).getTextContent();
-                                        }
-                                        if(childCancion.item(k).getNodeName().equals("Duracion"))
-                                        {
-                                            atributoTres = childCancion.item(k).getTextContent();
-                                        }
-                                        if(childCancion.item(k).getNodeType() == org.w3c.dom.Node.TEXT_NODE)
-                                        {                                
-                                            if(!isFirst)
-                                            {
-                                                nodosText = childCancion.item(k).getNodeValue();
-                                                isFirst = true;
-                                            }
-                                            else
-                                            {
-                                                nodosText = nodosText.concat(childCancion.item(k).getNodeValue());
-                                            }                                
-                                        }                                                                                                                       
-                                    }
-                                    atributoCinco = nodosText.trim();
-                                }
-                                /*listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
-                                isFirst = false;*/
-                            }
-                            /*listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
-                            isFirst = false;*/
+                                }                                
+                            }                            
                         }
                         else 
                         {
@@ -755,16 +686,12 @@ public class Sint48P2 extends HttpServlet
                         atributoCuatro = null;
                         atributoCinco = null;                        
                         isFirst = false;                                         
-                    }
-
-                    //listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));                    
+                    }                                        
                 }//Cierra for recorrer hijos Disco
                 atributoSeis="";
-                flag = false;
-                //listares.add(new Cancion(atributoUno,atributoDos,atributoTres, atributoCuatro, atributoCinco, atributoSeis));
+                flag = false;                
             }//Cierra for recorrer nodos Disco               
         }//Cierra for recorrer hashmap mapDocs
-
         //Recorre listares y obtener las duraciones comparando cada una con la elegida. Si es menor, meterlo en la lista resultado
         for (int i = 0;i<listares.size();i++)
         {
@@ -963,8 +890,17 @@ public class Sint48P2 extends HttpServlet
         out.println("<h3>Este es el resultado:</h3>");
         for(int i=0;i<Resultado.size();i++)
         {
-            Cancion obj = Resultado.get(i);           
-            out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");        
+            Cancion obj = Resultado.get(i);
+            String premios = obj.getPremios(obj);
+            if(premios.equals(""))
+            {
+                out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"'</p>");
+            }
+            else
+            {
+                out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");
+            }           
+            //out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");        
         }        
         out.println("</form>");
         out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atr&aacute;s</button> ");
@@ -992,7 +928,16 @@ public class Sint48P2 extends HttpServlet
             for(int i=0;i<Resultado.size();i++)
             {
                 Cancion obj = Resultado.get(i);
-                out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
+                String premios = obj.getPremios(obj);
+                if(premios.equals(""))
+                {
+                    out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
+                }
+                else
+                {
+                    out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
+                }
+                //out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
             }
             out.println("</canciones>");                                                       
         }        
