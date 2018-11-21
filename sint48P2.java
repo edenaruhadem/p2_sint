@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.*;
-import javax.servlet.annotation.*;
+//import javax.servlet.annotation.*;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+//import java.util.LinkedList;
 import java.util.Iterator;
 //Parsers, DOM y Exceptions
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -90,9 +90,9 @@ public class Sint48P2 extends HttpServlet
             ErrorHandler er = new ErrorHandler(); //Creacion del objeto error
             //Asingación de la clase de control de errores al parser 
             db.setErrorHandler(er);
-        }catch(ParserConfigurationException e)
+        }catch(ParserConfigurationException pce)
         {
-            e.printStackTrace();
+            pce.printStackTrace();
         }        
         try
         {
@@ -103,16 +103,18 @@ public class Sint48P2 extends HttpServlet
             buscaIml(doc, mapDocs);
             listaFicheros.removeFirst();
         }catch(SAXException e)
-        {
-            //System.out.println("SAXXXXXXXXXXXXX del primero");
+        {            
             e.printStackTrace();
+            mensajeError = "Fatal Error: "+e.toString();
+            System.out.println("Fatal Error: "+e.toString()); 
+            EFatales.put(url,mensajeError);
             error = true;                    
-        }catch(IOException e)
+        }catch(IOException ioe)
         {
-            e.printStackTrace();
-        }catch(Exception e)
+            ioe.printStackTrace();
+        }catch(Exception ee)
         {
-            e.printStackTrace();
+            ee.printStackTrace();
         }        
 	    while(!listaFicheros.isEmpty())
         {
@@ -121,23 +123,23 @@ public class Sint48P2 extends HttpServlet
             {
                 try
                 {
-                //Generacion del arbol DOM tras el parseo. Generará un error el método parse si el documento no  es well-formed. 				Una SAXException
-                //Saltará la clase de gestión de errores en caso de que los contenga (no válido según el schema xml 				definido).            
+                //Generacion del arbol DOM tras el parseo. Generará un error el método parse si el documento no  es well-formed. Una SAXException
+                //Saltará la clase de gestión de errores en caso de que los contenga (no válido según el schema xml	definido).            
                     doc = db.parse(new URL(url).openStream());
                     leidos.add(url);                    
                 }catch(SAXException e)
                 {                    
                     e.printStackTrace();
-                    error = true;
-                    //System.out.println("SAXXXXXXXXXXXXX");                    
-                }catch(IOException e)
-                {
-                    //System.out.println("IIIIIIOOOOOOOOO");
-                    e.printStackTrace();
-                }catch(Exception e)
-                {
-                    //System.out.println("EEEEEEEEEEEEEEE");
-                    e.printStackTrace();
+                    mensajeError = "Fatal Error: "+e.toString();
+                    System.out.println("Fatal Error: "+e.toString()); 
+                    EFatales.put(url,mensajeError);                   
+                    error = true;                                       
+                }catch(IOException ioe)
+                {                    
+                    ioe.printStackTrace();
+                }catch(Exception ee)
+                {                    
+                    ee.printStackTrace();
                 }                
                 if(!error)
                 {
@@ -986,7 +988,7 @@ public class Sint48P2 extends HttpServlet
 //-----------------------------------------------------------------ERROR CLASS-----------------------------------------------------------------------
 class ErrorHandler extends DefaultHandler 
 {    
-    public ErrorHandler () {} 
+    //public ErrorHandler () {} 
 
     //Metodos
     public void warning (SAXParseException spe) throws SAXException 
