@@ -19,6 +19,7 @@ import java.util.Iterator;
 //Parsers, DOM y Exceptions
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.validation.*;
+import javax.lang.model.util.ElementScanner6;
 import javax.security.sasl.SaslException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -53,10 +54,7 @@ public class Sint48P2 extends HttpServlet
     //public static ArrayList<String>fichErroneos = new ArrayList<String>();
     public Map<String,String>Errores= new HashMap<String,String>();
     public Map<String,String>EFatales = new HashMap<String,String>();
-    public Map<String,String>Warnings = new HashMap<String,String>();
-    /*public static ArrayList<String>urlErrores= new ArrayList<String>();
-    public static ArrayList<String>urlEFatales = new ArrayList<String>();
-    public static ArrayList<String>urlWarnings = new ArrayList<String>();*/
+    public Map<String,String>Warnings = new HashMap<String,String>();    
     public boolean error = false;
     public String mensajeError = "";
     //public ArrayList<Document>documentos = new ArrayList<Document>;
@@ -369,109 +367,143 @@ public class Sint48P2 extends HttpServlet
     }//doGetFase11
 
     public void doGetFase12(HttpServletResponse res, String auto, String anio)throws IOException
-    {        
-        listaDiscos.clear();
-        ArrayList<String> interpretes = new ArrayList<String>();                
-        listaDiscos = getC1Discos(anio);
-        for(int i=0;i<listaDiscos.size();i++)
+    {
+        if(anio==null)
         {
-            Disco objDisco = listaDiscos.get(i);
-            interpretes.add(objDisco.getInterprete(objDisco)); 
+            wrongReqAnio(res);
         }
-        Collections.sort(interpretes);        
-        for(int j = 0;j<interpretes.size();j++)
+        else
         {
-            String interlist = interpretes.get(j);
-            for(int k = 0;k<listaDiscos.size();k++)
+            listaDiscos.clear();
+            ArrayList<String> interpretes = new ArrayList<String>();                
+            listaDiscos = getC1Discos(anio);
+            for(int i=0;i<listaDiscos.size();i++)
             {
-                Disco obj = listaDiscos.get(k);
-                String inter = obj.getInterprete(obj);
-                if(inter.equals(interlist))
+                Disco objDisco = listaDiscos.get(i);
+                interpretes.add(objDisco.getInterprete(objDisco)); 
+            }
+            Collections.sort(interpretes);        
+            for(int j = 0;j<interpretes.size();j++)
+            {
+                String interlist = interpretes.get(j);
+                for(int k = 0;k<listaDiscos.size();k++)
                 {
-                    listaDiscos.remove(obj);
-                    listaDiscos.add(obj);
-                }
-            }           
-        }
-        if(auto==null)
-        {
-            doHtmlF12(res,anio, listaDiscos);                
-        }
-        else if(auto.equals("si"))
-        {
-            doXmlF12(res,anio,listaDiscos);
-        }       
+                    Disco obj = listaDiscos.get(k);
+                    String inter = obj.getInterprete(obj);
+                    if(inter.equals(interlist))
+                    {
+                        listaDiscos.remove(obj);
+                        listaDiscos.add(obj);
+                    }
+                }           
+            }
+            if(auto==null)
+            {
+                doHtmlF12(res,anio, listaDiscos);                
+            }
+            else if(auto.equals("si"))
+            {
+                doXmlF12(res,anio,listaDiscos);
+            }
+        }               
     }//doGetFase12
 
     public void doGetFase13(HttpServletResponse res, String auto, String anio, String idd)throws IOException
     {
-        listaCanciones.clear();
-        ArrayList<Integer> dur = new ArrayList<Integer>();        
-        listaCanciones = getC1Canciones(anio, idd);
-        for(int i=0;i<listaCanciones.size();i++)
+        if(anio==null)
         {
-            Cancion objCancion = listaCanciones.get(i);
-            dur.add(Integer.parseInt(objCancion.getDuracion(objCancion))); 
+            wrongReqAnio(res);
         }
-        Collections.sort(dur);
-        for(int j = 0;j<dur.size();j++)
+        else if(idd==null)
         {
-            Integer durlist = dur.get(j);
-            for(int k = 0;k<listaCanciones.size();k++)
+            wrongReqIdd(res);
+        }
+        else
+        {
+            listaCanciones.clear();
+            ArrayList<Integer> dur = new ArrayList<Integer>();        
+            listaCanciones = getC1Canciones(anio, idd);
+            for(int i=0;i<listaCanciones.size();i++)
             {
-                Cancion obj = listaCanciones.get(k);
-                String dura = obj.getDuracion(obj);
-                if(Integer.toString(durlist).equals(dura))
+                Cancion objCancion = listaCanciones.get(i);
+                dur.add(Integer.parseInt(objCancion.getDuracion(objCancion))); 
+            }
+            Collections.sort(dur);
+            for(int j = 0;j<dur.size();j++)
+            {
+                Integer durlist = dur.get(j);
+                for(int k = 0;k<listaCanciones.size();k++)
                 {
-                    listaCanciones.remove(obj);
-                    listaCanciones.add(obj);
-                }
-            }           
-        }        
-        if(auto==null)
-        {
-            doHtmlF13(res,anio, idd, listaCanciones);                
-        }
-        else if(auto.equals("si"))
-        {
-            doXmlF13(res,idd,listaCanciones);
-        }       
+                    Cancion obj = listaCanciones.get(k);
+                    String dura = obj.getDuracion(obj);
+                    if(Integer.toString(durlist).equals(dura))
+                    {
+                        listaCanciones.remove(obj);
+                        listaCanciones.add(obj);
+                    }
+                }           
+            }        
+            if(auto==null)
+            {
+                doHtmlF13(res,anio, idd, listaCanciones);                
+            }
+            else if(auto.equals("si"))
+            {
+                doXmlF13(res,idd,listaCanciones);
+            }
+
+        }               
     }//doGetFase13
 
     public void doGetFase14(HttpServletResponse res, String auto, String anio, String idd, String idc)throws IOException
     {   
-        Resultado.clear();
-        ArrayList<String> titulos = new ArrayList<String>();      
-        Resultado = getC1Resultado(anio, idd, idc);
-        for(int i=0;i<Resultado.size();i++)
+        if(anio==null)
         {
-            Cancion objRes = Resultado.get(i);
-            titulos.add(objRes.getTitulo(objRes)); 
+            wrongReqAnio(res);
         }
-        Comparator<String> comparador = Collections.reverseOrder();
-        Collections.sort(titulos, comparador);
-        for(int j = 0;j<titulos.size();j++)
+        else if(idd==null)
         {
-            String titlist = titulos.get(j);
-            for(int k = 0;k<Resultado.size();k++)
+            wrongReqIdd(res);
+        }
+        else if(idc==null)
+        {
+            wrongReqIdc(res);
+        }
+        else
+        {
+            Resultado.clear();
+            ArrayList<String> titulos = new ArrayList<String>();      
+            Resultado = getC1Resultado(anio, idd, idc);
+            for(int i=0;i<Resultado.size();i++)
             {
-                Cancion obj = Resultado.get(k);
-                String titu = obj.getTitulo(obj);
-                if(titlist.equals(titu))
+                Cancion objRes = Resultado.get(i);
+                titulos.add(objRes.getTitulo(objRes)); 
+            }
+            Comparator<String> comparador = Collections.reverseOrder();
+            Collections.sort(titulos, comparador);
+            for(int j = 0;j<titulos.size();j++)
+            {   
+                String titlist = titulos.get(j);
+                for(int k = 0;k<Resultado.size();k++)
                 {
-                    Resultado.remove(obj);
-                    Resultado.add(obj);
-                }
-            }           
+                    Cancion obj = Resultado.get(k);
+                    String titu = obj.getTitulo(obj);
+                    if(titlist.equals(titu))
+                    {
+                        Resultado.remove(obj);
+                        Resultado.add(obj);
+                    }
+                }           
+            }               
+            if(auto==null)
+            {
+                doHtmlF14(res,anio, idd, idc, Resultado);                
+            }
+            else if(auto.equals("si"))
+            {
+                doXmlF14(res,idc,Resultado);
+            }
         }               
-        if(auto==null)
-        {
-            doHtmlF14(res,anio, idd, idc, Resultado);                
-        }
-        else if(auto.equals("si"))
-        {
-            doXmlF14(res,idc,Resultado);
-        }       
     }//doGetFase14     
     
     public ArrayList<String> getC1Anios()
@@ -816,26 +848,26 @@ public class Sint48P2 extends HttpServlet
         out.println("</footer>");
         out.println("</html>");
     }//doHtamlF12
+    public void wrongReqAnio(HttpServletResponse res) throws IOException
+    {
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();            
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<wrongRequest>no param:panio</wrongRequest>");
+    }
 
     public void doXmlF12(HttpServletResponse res,String anio, ArrayList<Disco> listaDiscos)throws IOException
     {
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();            
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
-        if(anio==null)
+        out.println("<discos>");
+        for(int i=0;i<listaDiscos.size();i++)
         {
-            out.println("<wrongRequest>no param:panio</wrongRequest>");
-        }            
-        else
-        {
-            out.println("<discos>");
-            for(int i=0;i<listaDiscos.size();i++)
-            {
-                Disco d = listaDiscos.get(i);                       
-                out.println("<disco idd='"+d.getIDD(d)+"' interprete='"+d.getInterprete(d)+"' langs='"+d.getIdiomas(d)+"'>"+d.getTitulo(d)+"</disco>");
-            }
-            out.println("</discos>");                            
+            Disco d = listaDiscos.get(i);                       
+            out.println("<disco idd='"+d.getIDD(d)+"' interprete='"+d.getInterprete(d)+"' langs='"+d.getIdiomas(d)+"'>"+d.getTitulo(d)+"</disco>");
         }
+        out.println("</discos>");        
     }//doXmlF12
 
     public void doHtmlF13(HttpServletResponse res, String anio, String idd, ArrayList<Cancion> listaCanciones)throws IOException
@@ -877,26 +909,26 @@ public class Sint48P2 extends HttpServlet
         out.println("</footer>");
         out.println("</html>");
     }//doHtmlF13
+    public void wrongReqIdd(HttpServletResponse res) throws IOException
+    {
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<wrongRequest>no param:pidd</wrongRequest>");
+    }
 
     public void doXmlF13(HttpServletResponse res,String idd, ArrayList<Cancion> listaCanciones)throws IOException
     {
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
-        if(idd==null)
+        out.println("<canciones>");
+        for(int i=0;i<listaCanciones.size();i++)
         {
-            out.println("<wrongRequest>no param:pidd</wrongRequest>");
-        }            
-        else
-        {
-            out.println("<canciones>");
-            for(int i=0;i<listaCanciones.size();i++)
-            {
-                Cancion c = listaCanciones.get(i);
-                out.println("<cancion idc='"+c.getIdc(c)+"' genero='"+c.getGenero(c)+"' duracion='"+c.getDuracion(c)+"'>"+c.getTitulo(c)+"</cancion>");
-            }
-            out.println("</canciones>");                                         
-        }            
+            Cancion c = listaCanciones.get(i);
+            out.println("<cancion idc='"+c.getIdc(c)+"' genero='"+c.getGenero(c)+"' duracion='"+c.getDuracion(c)+"'>"+c.getTitulo(c)+"</cancion>");
+        }
+        out.println("</canciones>");                   
     }//doXmlF13
 
     public void doHtmlF14(HttpServletResponse res, String anio, String idd, String idc, ArrayList<Cancion> Resultado)throws IOException
@@ -930,27 +962,27 @@ public class Sint48P2 extends HttpServlet
         out.println("</footer>");
         out.println("</html>"); 
     }//doHtmlF14
+    public void wrongReqIdc(HttpServletResponse res) throws IOException
+    {
+        res.setContentType("text/xml");
+        PrintWriter out = res.getWriter();
+        out.println("<?xml version='1.0' encoding='utf-8' ?>");
+        out.println("<wrongRequest>no param:pidc</wrongRequest>");
+    }
 
     public void doXmlF14(HttpServletResponse res,String idc, ArrayList<Cancion> Resultado)throws IOException
     {
         res.setContentType("text/xml");
         PrintWriter out = res.getWriter();
         out.println("<?xml version='1.0' encoding='utf-8' ?>");
-        if(idc==null)
+        out.println("<songs>");
+        for(int i=0;i<Resultado.size();i++)
         {
-            out.println("<wrongRequest>no param:pidc</wrongRequest>");
-        }            
-        else
-        {
-            out.println("<songs>");
-            for(int i=0;i<Resultado.size();i++)
-            {
-                Cancion obj = Resultado.get(i);
-                String premios = obj.getPremios(obj);                
-                out.println("<song descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</song>");                
-            }
-            out.println("</songs>");                                                       
-        }        
+            Cancion obj = Resultado.get(i);
+            String premios = obj.getPremios(obj);                
+            out.println("<song descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</song>");                
+        }
+        out.println("</songs>");                
     }//doXmlF14
 
     public void doXmlNop(HttpServletResponse res)throws IOException
