@@ -949,22 +949,22 @@ public class Sint48P2 extends HttpServlet
         }            
         else
         {
-            out.println("<canciones>");
+            out.println("<songs>");
             for(int i=0;i<Resultado.size();i++)
             {
                 Cancion obj = Resultado.get(i);
                 String premios = obj.getPremios(obj);
                 if(premios.equals(""))
                 {
-                    out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
+                    out.println("<song descripcion='"+obj.getDescripcion(obj)+"'>"+obj.getTitulo(obj)+"</song>");
                 }
                 else
                 {
-                    out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
+                    out.println("<song descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</song>");
                 }
                 //out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
             }
-            out.println("</canciones>");                                                       
+            out.println("</songs>");                                                       
         }        
     }//doXmlF14
 
