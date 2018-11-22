@@ -916,16 +916,9 @@ public class Sint48P2 extends HttpServlet
         for(int i=0;i<Resultado.size();i++)
         {
             Cancion obj = Resultado.get(i);
-            String premios = obj.getPremios(obj);
-            if(premios.equals(""))
-            {
-                out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"'</p>");
-            }
-            else
-            {
-                out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");
-            }           
-            //out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");        
+            String premios = obj.getPremios(obj);            
+            out.println("<p>"+Integer.toString(i+1)+".-"+" T&iacute;tulo = '"+obj.getTitulo(obj)+"' --- Descripci&oacute;n = '"+obj.getDescripcion(obj)+"' --- Premios = '"+obj.getPremios(obj)+"'</p>");                    
+                    
         }        
         out.println("</form>");
         out.println("<button class = 'buttonAtras'  onclick=\"window.location='/sint48/P2IM?p=d4r18c392b&pfase=13&panio="+anio+"&pidd="+idd+"'\">Atr&aacute;s</button> ");
@@ -953,16 +946,8 @@ public class Sint48P2 extends HttpServlet
             for(int i=0;i<Resultado.size();i++)
             {
                 Cancion obj = Resultado.get(i);
-                String premios = obj.getPremios(obj);
-                if(premios.equals(""))
-                {
-                    out.println("<song descripcion='"+obj.getDescripcion(obj)+"'>"+obj.getTitulo(obj)+"</song>");
-                }
-                else
-                {
-                    out.println("<song descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</song>");
-                }
-                //out.println("<cancion descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</cancion>");
+                String premios = obj.getPremios(obj);                
+                out.println("<song descripcion='"+obj.getDescripcion(obj)+"' premios='"+obj.getPremios(obj)+"'>"+obj.getTitulo(obj)+"</song>");                
             }
             out.println("</songs>");                                                       
         }        
