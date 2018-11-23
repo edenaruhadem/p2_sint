@@ -627,6 +627,9 @@ public class Sint48P2 extends HttpServlet
 
     public ArrayList<Cancion> getC1Resultado (String anio, String idd, String idc) //Todas las canciones de un interprete que duren menos que una elegida
     {
+        System.out.println("anioooooooooooooooooooooo"+anio);
+        System.out.println("iddddddddddddddddddd"+idd);
+        System.out.println("idcccccccccccccccc"+idc);
         String dur = null;
         String interprete = null;
         String atributoUno = null;
@@ -636,26 +639,51 @@ public class Sint48P2 extends HttpServlet
         String atributoCinco = null;
         String atributoSeis = "";
         String nodosText = "";
+        String atribDisco = "";
+        String atribCancion = "";
         Boolean isFirst = false;       
         Document res = null;
         Boolean flag = false;    
-        ArrayList<Cancion> listares = new ArrayList<Cancion>();    
-        for(int i = 0;i<listaCanciones.size();i++)
+        ArrayList<Cancion> listares = new ArrayList<Cancion>();
+        for (String key:mapDocs.keySet())
         {
-            Cancion objc = listaCanciones.get(i);        
-            if(objc.getIdc(objc).equals(idc))
-            {            
-                dur = objc.getDuracion(objc); 
-            }
-        }
-        for(int i = 0;i<listaDiscos.size();i++)
-        {
-            Disco objd = listaDiscos.get(i);        
-            if(objd.getIDD(objd).equals(idd))
+            res = mapDocs.get(key);
+            //Document doc = mapDocs.get(value);    
+            Element raiz = res.getDocumentElement(); 
+            NodeList nodeDiscos = raiz.getElementsByTagName("Disco");
+            for(int i = 0;i<nodeDiscos.getLength();i++)
             {
-                interprete = objd.getInterprete(objd); 
+                Node itemDisco = nodeDiscos.item(i);
+                atribDisco=itemDisco.getAttributes().getNamedItem("idd").getTextContent();
+                if(atribDisco.equals(idd))
+                {
+                    NodeList childDiscos = itemDisco.getChildNodes();
+                    for (int j=0;j<childDiscos.getLength();j++)
+                    {                               
+                        if(childDiscos.item(j).getNodeName().equals("Interprete"))
+                        {
+                            interprete = childDiscos.item(j).getTextContent();
+                        }
+                        else if(childDiscos.item(j).getNodeName().equals("Cancion"))
+                        {                            
+                            atribCancion=childDiscos.item(j).getAttributes().getNamedItem("idc").getTextContent();
+                            if(atribCancion.equals(idc))
+                            {
+                                Node itemCancion = childDiscos.item(j);
+                                NodeList childCancion = itemCancion.getChildNodes();
+                                for (int r=0;r<childCancion.getLength();r++)
+                                {
+                                    if(childCancion.item(r).getNodeName().equals("Duracion"))
+                                    {
+                                        dur = childCancion.item(r).getTextContent();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-        }            
+        }                    
         for (String key:mapDocs.keySet())
         {
             res = mapDocs.get(key);
@@ -664,7 +692,7 @@ public class Sint48P2 extends HttpServlet
             NodeList nodeDiscos = raiz.getElementsByTagName("Disco");            
             for(int i = 0;i<nodeDiscos.getLength();i++)
             {
-                Node itemDisco = nodeDiscos.item(i);
+                Node itemDisco = nodeDiscos.item(i);                
                 NodeList childDiscos = itemDisco.getChildNodes();            
                 for (int j=0;j<childDiscos.getLength();j++)
                 {                               
@@ -746,7 +774,7 @@ public class Sint48P2 extends HttpServlet
                     }                                        
                 }//Cierra for recorrer hijos Disco
                 atributoSeis="";
-                flag = false;                
+                flag = false;                                
             }//Cierra for recorrer nodos Disco               
         }//Cierra for recorrer hashmap mapDocs
         //Recorre listares y obtener las duraciones comparando cada una con la elegida. Si es menor, meterlo en la lista resultado
@@ -759,6 +787,7 @@ public class Sint48P2 extends HttpServlet
                 Resultado.add(obj);                
             }
         }
+        System.out.println("Hizo el resultado");
         return Resultado;        
     }//getC1Resultado
 
