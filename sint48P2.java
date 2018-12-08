@@ -54,9 +54,11 @@ public class Sint48P2 extends HttpServlet
     //public static ArrayList<String>fichErroneos = new ArrayList<String>();
     public Map<String,String>Errores= new HashMap<String,String>();
     public Map<String,String>EFatales = new HashMap<String,String>();
-    public Map<String,String>Warnings = new HashMap<String,String>();    
+    public Map<String,String>Warnings = new HashMap<String,String>();
+
     public boolean error = false;
     public String mensajeError = "";
+    
     //public ArrayList<Document>documentos = new ArrayList<Document>;
 
 //------------------------------------------------------------SERVLET.INIT------------------------------------------------------------------------        
@@ -1035,7 +1037,7 @@ public class Sint48P2 extends HttpServlet
 class ErrorHandler extends DefaultHandler 
 {    
     //public ErrorHandler () {} 
-
+    //public String mensajeError = "";
     //Metodos
     public void warning (SAXParseException spe) throws SAXException 
     {        

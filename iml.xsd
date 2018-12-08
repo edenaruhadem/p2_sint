@@ -111,10 +111,16 @@
                 <xs:element name="Titulo" type="xs:string"/>
                 <xs:element name="Idc" type="xs:string"/>
             </xs:choice>
-            <xs:element name="IML" type="xs:string" minOccurs="0"/>
+            <xs:element name="IML" type="simpleTypeIML" minOccurs="0"/> <!--tenia string-->
         </xs:sequence>
         <xs:attribute name="anio" type="xs:string" use="required"/>    
     </xs:complexType>
+
+    <xs:simpleType name="simpleTypeIML">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-z][a-z][a-z]([0-9]{4})(.[a-z][a-z][a-z])"/>
+        </xs:restriction>   
+    </xs:simpleType>
 
     <xs:element name="Songs" type="complexSongs"></xs:element>
 
