@@ -65,7 +65,7 @@ public class Sint48P2 extends HttpServlet
     public void init(ServletConfig config) throws ServletException
     {
         ServletContext context = config.getServletContext();        
-        File f= new File(context.getRealPath("iml.xsd"));
+        File f= new File(context.getRealPath("p2/iml.xsd"));
         String dir = f.getAbsolutePath();        
         String MY_SCHEMA = dir;      
 	//----------------Aquí hay que leer los ficheros. Eliminar erróneos para el procesado posterior-------------    	
