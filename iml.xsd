@@ -117,8 +117,8 @@
     </xs:complexType>
 
     <xs:simpleType name="simpleTypeIML">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="[a-z][a-z][a-z]([0-9]{4})(.[a-z][a-z][a-z])"/>
+        <xs:restriction base="xs:string">            
+            <xs:pattern value="iml([0-9]{4})(.xml)"/>
         </xs:restriction>   
     </xs:simpleType>
 
